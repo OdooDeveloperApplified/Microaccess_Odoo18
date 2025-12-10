@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Unblock Quantity wizard form view -->
+    <record id="view_unblock_quantity_wizard_form" model="ir.ui.view">
+        <field name="name">unblock.quantity.wizard.form</field>
+        <field name="model">unblock.quantity.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Unblock Product Quantity">
+                <sheet>
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="source_location_id"/>
+                        <field name="stock_location_id" readonly="1"/>
+                        <field name="quantity"/>
+                    </group>
+                    <footer>
+                        <button string="Confirm" type="object" name="action_confirm_unblock" class="btn-primary"/>
+                        <button string="Cancel" special="cancel" class="btn-secondary"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree view to show the blocked quantity moves on clicking smart button -->
+    <record id="view_unblocked_quantity_tree" model="ir.ui.view">
+        <field name="name">stock.quant.unblocked.tree</field>
+        <field name="model">stock.move</field>
+        <field name="arch" type="xml">
+            <list string="Unblocked Quantity">
+                <field name="product_id"/>
+                <field name="product_uom_qty"/>
+                <field name="product_uom"/>
+                <field name="location_id" string="Source Location"/>
+                <field name="location_dest_id" string="Destination Location"/>
+                <field name="date"/>
+            </list>
+        </field>
+    </record>
+</odoo>

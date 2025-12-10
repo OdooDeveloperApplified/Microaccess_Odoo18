@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Feedback page template starts -->
+    <template id="custom_rating_selection_page" name="Custom Rating Selection Page">
+        <t t-call="web.frontend_layout">
+            <div class="container mb-5 mt-4 o_rating_page_submit">
+                <div class="oe_structure" id="oe_structure_rate_submit_header"/>
+                <div class="row text-center justify-content-center">
+                    <h1 class="col-12 mt-5">We’d love to hear your thoughts on our service with the engineer</h1>
+                    <span style="color: #888888">(click on one of these smileys)</span>
+                    <form class="col-md-6" t-attf-action="/rate/#{token}/submit_feedback" method="post">
+                        <div class="btn-group row flex-nowrap justify-content-center w-100 mt-5"
+                             role="group"
+                             data-bs-toggle="buttons">
+                            <t t-set="rating_map" t-value="{'excellent': 5, 'top': 4, 'ok': 3, 'dissatisfied': 1}"/>
+                            <t t-foreach="rating_map.items()" t-as="item">
+                                <t t-set="rate_name" t-value="item[0]"/>
+                                <t t-set="rate_value" t-value="item[1]"/>
+                                <input type="radio" name="rate"
+                                    class="btn-check"
+                                    t-attf-id="rate_{{rate_name}}"
+                                    t-att-value="rate_name"
+                                    t-att-checked="'checked' if rate == rate_name else None"/>
+                                <label t-attf-class="col p-4 btn o_rating_label shadow-none transition-base {{ 'active' if rate == rate_name else '' }}"
+                                    t-att-for="'rate_%s' % (rate_name)">
+                                    <img t-attf-src="/Microaccess_Helpdesk/static/src/img/rating_{{ rate_value }}.png"
+                                        t-att-alt="rate_name"
+                                        t-att-title="rate_name"
+                                        t-attf-class="o_{{ rate_name.lower() }}"/>
+                                    <div class="mt-2 fw-semibold">
+                                    <t t-if="rate_name == 'excellent'">
+                                        <span class="text-info">Excellent</span>
+                                    </t>
+                                    <t t-elif="rate_name == 'top'">
+                                        <span class="text-success">Satisfied</span>
+                                    </t>
+                                    <t t-elif="rate_name == 'ok'">
+                                        <span class="text-warning">Okay</span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="text-danger">Dissatisfied</span>
+                                    </t>
+                                    </div>
+
+                                </label>
+                            </t>
+                        </div>
+                        <p class="mt-5">
+                            Feel free to share feedback on your experience:
+                        </p>
+                        <input type="hidden" name="csrf_token"
+                               t-att-value="request.csrf_token()"/>
+                        <textarea class="form-control" name="feedback" rows="8"
+                                  t-att-value="rating.feedback"></textarea>
+                        <button type="submit" class="btn btn-primary mt-4"
+                                style="margin-top:8px;">Send Feedback</button>
+                    </form>
+                    <div class="oe_structure" id="oe_structure_rate_submit_footer"/>
+                </div>
+            </div>
+        </t>
+    </template>
+    <!-- Feedback page template ends -->
+
+    <!-- Thank you page template starts -->
+    <template id="rating_external_page_view" name="Thanks for your Feedback">
+        <t t-call="web.frontend_layout">
+            <div class="o_rating_page_thank_you d-flex flex-column justify-content-center">
+                <div class="container py-5">
+                    <div class="oe_structure" id="oe_structure_rating_header_thanks_you"/>
+                    <h3 class="text-center mt-4 pb-2">Thank you for your feedback!</h3>
+                    <p class="text-center" style="font-size: 16px; color: #555;">Your review has been successfully submitted. We appreciate your input and strive to provide the best service.</p>
+                    <p class="text-center" style="font-size: 16px; color: #555;">If you have any further comments or questions, feel free to reach out to us.</p>
+                    <a t-att-href="web_base_url" class="d-block text-decoration-none text-center mb-4">
+                        <i class="fa fa-arrow-left me-1"/> Back to the Homepage
+                    </a>
+                    <div class="oe_structure" id="oe_structure_rating_footer_thanks_you"/>
+                </div>
+            </div>
+        </t>
+    </template>
+    <!-- Thank you page template ends -->
+
+    <template id="inherit_helpdesk_ticket_form" inherit_id="helpdesk.helpdesk_ticket_view_form" priority="20">
+        <xpath expr="//button[@name='action_open_ratings']/i[1]" position="replace">
+            <!-- Blue smiley for Excellent -->
+            <i t-att-title="rating_last_value == 5 and 'Excellent' or rating_last_value == 4 and 'Satisfied' or ''"
+                class="fa fa-fw o_button_icon fa-smile-o"
+                t-att-class="'fa fa-fw o_button_icon fa-smile-o ' + (rating_last_value == 5 and 'text-primary' or rating_last_value == 4 and 'text-success' or 'text-secondary')" />
+            
+            <!-- Green smiley for Satisfied (exclude if Excellent) -->
+            <!-- <i class="fa fa-fw o_button_icon fa-smile-o text-success"
+            t-att-title="'Satisfied'"
+            t-attf-style="display: #{ 'inline' if rating_last_value == 4 else 'none' }"/> -->
+  
+        </xpath>
+    </template>
+
+</odoo>

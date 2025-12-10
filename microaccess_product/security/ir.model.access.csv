@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_block_quantity_wizard,access.block.quantity.wizard,microaccess_product.model_block_quantity_wizard,base.group_user,1,1,1,1
+access_unblock_quantity_wizard,access.unblock.quantity.wizard,microaccess_product.model_unblock_quantity_wizard,base.group_user,1,1,1,1
+
+

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Category Master Form View -->
+    <record id="view_category_master_form" model="ir.ui.view">
+        <field name="name">category.master.form</field>
+        <field name="model">category.master</field>
+        <field name="arch" type="xml">
+            <form string="Category">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Category Master Tree View -->
+    <record id="view_category_master_list" model="ir.ui.view">
+        <field name="name">category.master.list</field>
+        <field name="model">category.master</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    
+    <!-- Category Master Action -->
+    <record id="action_category_master" model="ir.actions.act_window">
+        <field name="name">Category</field>
+        <field name="res_model">category.master</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage Category for Contacts Module.
+            </p>
+        </field>
+    </record>
+    
+    <!-- ###################################################################################################################### -->
+
+    <!-- Master Menu under Contacts > Configuration -->
+    <menuitem id="menu_contacts_master_root"
+              name="Master"
+              parent="contacts.res_partner_menu_config"
+              sequence="7"
+              />
+
+    <!-- Category Menu under Contacts > Configuration > Master -->
+    <menuitem id="menu_category_master"
+              name="Category"
+              parent="Microaccess_Contacts.menu_contacts_master_root"
+              action="action_category_master"
+              sequence="1"
+              />
+</odoo>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="quotation_report_inherit" inherit_id="purchase.report_purchasequotation_document">
+        <xpath expr="//p[@t-field='o.notes']" position="after">
+            <div class="mt-3 text-start" style="line-height: 0.5;">
+                <p style="margin: 0;">This is System Generated Purchase Order And Does Not Require Signature</p>
+                <p style="margin-top: 15px;">For <t t-esc="o.company_id.name"/></p>
+                <img t-if="o.company_id.stamp" t-att-src="image_data_uri(o.company_id.stamp)" 
+                     alt="Company Stamp" style="width: 80px; height: auto;"/>
+                <p style="margin: 0;"><t t-esc="o.user_id.name"/></p>
+            </div>
+        </xpath>
+
+        <xpath expr="//t[@t-set='address']/div[@t-field='o.partner_id']" position="before">
+            <strong class="d-block mb-1">Vendor/Supplier Address:</strong>
+        </xpath>
+
+        <!-- Code to change the shipping address choosen and remove the default shipping address block on the report -->
+        <xpath expr="//t[@t-call='web.external_layout']" position="inside">
+            <t t-set="o" t-value="o.with_context(lang=o.partner_id.lang)"/>
+            <t t-set="information_block">
+                <t t-if="o.shipping_address == 'micro'">
+                    <strong class="d-block mb-1">Shipping Address:</strong>
+                    <div>
+                        <span t-esc="o.company_id.name"/><br/>
+                        <span t-esc="o.company_id.street"/><br/>
+                        <t t-if="o.company_id.street2"><span t-esc="o.company_id.street2"/><br/></t>
+                        <span t-esc="o.company_id.city"/>
+                        <t t-if="o.company_id.state_id">, <span t-esc="o.company_id.state_id.name"/></t>
+                        <t t-if="o.company_id.zip"> - <span t-esc="o.company_id.zip"/></t><br/>
+                        <t t-if="o.company_id.country_id"><span t-esc="o.company_id.country_id.name"/></t>
+                        <t t-if="o.company_id.phone">
+                            <span>
+                                <i class="fa fa-phone" aria-hidden="true"></i>
+                                <t t-esc="o.company_id.phone"/>
+                            </span>
+                        </t>
+                    </div>
+                </t>
+                <t t-elif="o.shipping_address == 'order' and o.other_address_reports">
+                    <strong class="d-block mb-1">Shipping Address:</strong>
+                    <div>
+                        <span t-esc="o.other_address_reports.name"/><br/>
+                        <span t-esc="o.other_address_reports.street"/><br/>
+                        <t t-if="o.other_address_reports.street2"><span t-esc="o.other_address_reports.street2"/><br/></t>
+                        <span t-esc="o.other_address_reports.city"/>
+                        <t t-if="o.other_address_reports.state_id">, <span t-esc="o.other_address_reports.state_id.name"/></t>
+                        <t t-if="o.other_address_reports.zip"> - <span t-esc="o.other_address_reports.zip"/></t><br/>
+                        <t t-if="o.other_address_reports.country_id"><span t-esc="o.other_address_reports.country_id.name"/></t><br/>
+                        <t t-if="o.company_id.phone">
+                            <span>
+                                <i class="fa fa-phone" aria-hidden="true"></i>
+                                <t t-esc="o.company_id.phone"/>
+                            </span>
+                        </t>
+                    </div>
+                </t>
+                <t t-else="">
+                    <!-- fallback to default delivery address -->
+                    <t t-if="o.dest_address_id">
+                        <strong class="d-block mb-1">Shipping address:</strong>
+                        <div t-field="o.dest_address_id"
+                            t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}' name="purchase_shipping_address"/>
+                    </t>
+                </t>
+            </t>
+        </xpath>
+
+        <!-- Step 1: Add 'Sr.' header column before Description -->
+        <xpath expr="//table[contains(@class, 'table table-borderless')]//thead/tr/th[1]" position="before">
+            <th class="text-start" name="th_sr"><strong>Sr.</strong></th>
+        </xpath>
+
+        <!-- Step 2: Define the serial number variable before the loop -->
+        <xpath expr="//table[contains(@class, 'table table-borderless')]" position="before">
+            <t t-set="sn" t-value="0"/>
+        </xpath>
+
+        <!-- Step 3: Inject a serial number column before each 'line.name' cell -->
+        <xpath expr="//td[span[@t-field='order_line.name']]" position="before">
+            <td class="text-start" t-if="not order_line.display_type">
+                <t t-set="sn" t-value="sn + 1"/>
+                <span t-esc="sn"/>
+            </td>
+        </xpath>
+    </template>
+
+    <!-- Code to add mt-4 to the information block(i.e. Shipping address and vendor address in RFQ report for Purchase module ) -->
+    <template id="address_layout_margin_adjust" inherit_id="web.address_layout">
+        <xpath expr="//div[@name='information_block']" position="attributes">
+            <attribute name="class">col-6 mt-4</attribute>
+        </xpath>
+        <xpath expr="//div[@name='address']" position="attributes">
+            <attribute name="t-att-class">
+                (colclass + ' mt-4')
+            </attribute>
+        </xpath>
+        
+    </template>
+
+    <!-- Insert custom block after logo -->
+    <!-- <template id="external_layout_striped_inherit" inherit_id="web.external_layout_striped">
+        <xpath expr="//div[@class='d-flex']" position="after">
+    
+            <div class="mt-2" >
+                <strong>Billed To:</strong><br/>
+                <span t-esc="o.company_id.name"/><br/>
+                <span t-esc="o.company_id.street"/><br/>
+                <span t-esc="o.company_id.city"/>
+                <t t-if="o.company_id.state_id">, <span t-esc="o.company_id.state_id.name"/></t>
+                                <t t-if="o.company_id.zip"> - <span t-esc="o.company_id.zip"/></t>
+            </div>
+        
+        </xpath>
+    </template> -->
+</odoo>

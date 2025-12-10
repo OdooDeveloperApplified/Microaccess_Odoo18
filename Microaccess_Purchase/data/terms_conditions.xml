@@ -1,0 +1,27 @@
+<odoo>
+    <data>
+        <record id="view_purchase_settings_inherit" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.purchase</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="purchase.res_config_settings_view_form_purchase"/>
+            <field name="arch" type="xml">
+                <!--Code to add a new block for Terms and Conditions in Purchase module > Configuration > Settings -->
+                <xpath expr="//block[@name='purchase_setting_container']" position="before">
+                    <div class="app_settings_block" data-string="Purchase Terms" groups="purchase.group_purchase_manager">
+                        <h2>Default Terms and Conditions</h2>
+                        <block name="terms_conditions_container">
+                            <setting id="terms_conditions" help="Show standard terms and conditions on purchase orders">
+                                <field name="is_default_purchase_terms"/>
+                                <div class="content-group" invisible="not is_default_purchase_terms">
+                                    <div class="row mt16">
+                                        <field name="purchase_terms_conditions" placeholder="Enter default terms and conditions..." widget="text"/>
+                                    </div>
+                                </div>
+                            </setting>
+                        </block>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

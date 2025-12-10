@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Document Layout template -->
+    <template id="document_layout_custom" >
+        <t t-call="web.basic_layout">
+            <!-- HEADER -->
+            <div>
+                <div class="o_boxed_header">
+                    <div class="row mb-2">
+                        <!-- RIGHT: Company Logo -->
+                        <div class="col-12 text-end mb-2">
+                            <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" alt="Logo" style="max-height: 80px;"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Inner content -->
+            <div>
+                <t t-out="0"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- Report content section (Inner content) -->
+    <template id="custom_report_views">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="Microaccess_Sales.document_layout_custom">
+                    <div class="page" style="page-break-after: always; font-size: 16px; overflow: hidden; ">
+                       
+                        <div class="row">
+                            <div class="col-12 text-left">
+                                <span>To</span><br/>
+                                <span>The,</span><br/>
+                                <span><t t-esc="doc.partner_id.name"/></span><br/>
+                                <span><t t-esc="doc.partner_id.street"/></span><br/>
+                                <t t-if="doc.partner_id.street2">
+                                    <span><t t-esc="doc.partner_id.street2"/></span><br/>
+                                </t>
+                                <span>
+                                    <t t-esc="doc.partner_id.city"/> - <t t-esc="doc.partner_id.zip"/>
+                                </span><br/>
+                                <span>
+                                    <t t-esc="doc.partner_id.state_id.name"/> - <t t-esc="doc.partner_id.country_id.name"/>
+                                </span><br/>
+
+                                <!-- Conditional Contact Line -->
+                                <!-- <t t-if="doc.partner_id.phone or doc.partner_id.mobile">
+                                    <i class="fa fa-phone" style="margin-right: 4px;"></i>
+                                    <t t-if="doc.partner_id.phone"><t t-esc="doc.partner_id.phone"/></t>
+                                    <t t-if="doc.partner_id.phone and doc.partner_id.mobile">, </t>
+                                    <t t-if="doc.partner_id.mobile"><t t-esc="doc.partner_id.mobile"/></t><br/>
+                                </t> -->
+
+                                <!-- Conditional GSTIN Line -->
+                                <t t-if="doc.partner_id.vat">
+                                    <span>GSTIN:<t t-esc="doc.partner_id.vat"/></span>
+                                </t>
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div style="text-align: left; font-size: 16px;">
+                                <t t-if="doc.revision_date">
+                                    Date: <span t-field="doc.revision_date" t-options="{'widget': 'date'}"/>
+                                </t>
+                                <t t-else="">
+                                    Date: <span t-field="doc.date_order" t-options="{'widget': 'date'}"/>
+                                </t>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-2">
+                            <div style="text-align:left; width: 100%; font-size: 20px; font-weight: bold;">
+                                <t t-if="doc.repair_order_ids">
+                                <t t-foreach="doc.repair_order_ids" t-as="repair_order">
+                                        Quotation No: <span t-field="repair_order.name"/>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <span t-if="env.context.get('proforma', False) or is_pro_forma">Pro-Forma Invoice No. </span>
+                                    <span t-elif="doc.state in ['draft','sent']">Quotation No: </span>
+                                    <span t-else="">Order No: </span>
+                                    <span t-field="doc.name"/>
+                                </t>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div style="text-align: left; font-weight: bold; font-size: 16px;">
+                                Subject: <span style="font-weight: bold;" t-field="doc.subject"/>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <p style="margin-bottom: 10px;font-size: 16px;"><span style="font-weight:bold;">Respected Sir/Madam,</span><br/><br/>
+                                Greetings of the day!</p>
+                                <p style="text-align: justify; margin-bottom: 10px;">
+                                    
+                                    Thank You for considering us for your Prospective Purchase of IT product.  
+                                </p>
+                                <p style="text-align: justify; margin-bottom: 10px;">
+                                    Micro Access takes pride in giving priority to our customers and looking after their needs. 
+                                    Quality and customer service are what distinguish us from others. We always strive to exceed 
+                                    our customers' expectations and meet their requirements, for more than the last 30 years.  
+                                </p>
+                                <p style="text-align: justify; margin-bottom: 10px;">
+                                    Please find attached our proposal in respect to your requirements, feel free to contact us 
+                                    for any further clarification required by you.  
+                                </p>
+                                <p>
+                                    <b style="font-weight: normal;">For <span t-field="doc.company_id"/></b><br/><br/>
+                                    <b style="font-weight: normal;"><span t-field="doc.user_id.name"/></b><br/>
+                                    <b t-if="doc.user_id.phone" style="font-weight: normal; "><span t-field="doc.user_id.phone"/></b>
+                                    <b t-else="doc.user_id.mobile" style=" font-weight: normal;"><span t-field="doc.user_id.mobile"/></b><br/>
+                                    <b t-if="doc.user_id.function" style="font-weight: normal;"><b>( </b><span t-esc="doc.user_id.function"/><b> )</b></b>
+                                        
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <img t-att-src="'/Microaccess_Sales/static/1.png'" alt="Certification Logo" style="margin-top: 10px;"/>
+                        </div>
+                        <!-- <div class="row">
+                            <div class="col text-center">
+                                <img t-att-src="'/Microaccess_Sales/static/certification_logo.png'" 
+                                    alt="Certification Logo" 
+                                    style="margin-top: 10px;"/>
+                            </div>
+                        </div> -->
+                       
+                    </div>
+                    <div class="page">
+                        <div class="row mb-2" style="text-align: center; vertical-align: middle;">
+                            <h4>
+                                <strong>
+                                    <t t-if="doc.repair_order_ids">
+                                        REPAIR QUOTATION
+                                    </t>
+                                    <t t-else="">
+                                        COMMERCIAL PROPOSAL
+                                    </t>
+                                </strong>
+                            </h4>
+                        </div>
+                        <!-- Count only real product lines -->
+                        <t t-set="real_lines" t-value="[line for line in doc.order_line if not line.display_type]"/>
+                        <t t-set="last_index" t-value="len(real_lines)"/>
+                        <t t-set="counter" t-value="0"/>
+                        <table class="table table-bordered" style="background-color: white; width: 100%; border: 1px solid black; font-size: 16px;">
+                            <thead>
+                                <tr style="text-align: center;border: 1px solid black;">
+                                    <th style="font-weight:bold;">Sr.</th>
+                                    <th style="width: 40%;text-align: center;border: 1px solid black; font-weight:bold;">Particulars</th>
+                                    <th style="width: 12%;text-align: center;border: 1px solid black; font-weight:bold;">Price per Unit</th>
+                                    <th style="width: 8%;text-align: center;border: 1px solid black; font-weight:bold;">Qty</th>
+                                    <th style="width: 8%;text-align: center;border: 1px solid black; font-weight:bold;">GST (%)</th>
+                                    <th style="width: 14%;text-align: center;border: 1px solid black; font-weight:bold;">Total Price without GST</th>
+                                    <th style="width: 10%;text-align: center;border: 1px solid black; font-weight:bold;">GST Amount</th>
+                                    <th style="width: 16%;text-align: center;border: 1px solid black; font-weight:bold;">Total Price with GST</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.order_line" t-as="line">
+                                    <!-- Add a Note (spans all 8 columns) to appear as a single row instead of product record -->
+                                    <t t-if="line.display_type == 'line_note'">
+                                        <tr style="border: 1px solid black;">
+                                            <td colspan="99" style="font-style: italic;text-align: left; background-color: #f7f7f7;border: 1px solid black;">
+                                                <span t-field="line.name"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-elif="line.display_type == 'line_section'">
+                                        <tr style="border: 1px solid black;">
+                                            <td colspan="99" style="font-style: italic; text-align: left; background-color: #f7f7f7;border: 1px solid black;">
+                                                <span t-field="line.name"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <!-- Normal Product Line -->
+                                    <t t-elif="not line.display_type">
+                                        <t t-set="counter" t-value="counter + 1"/>
+                                        <tr style="border: 1px solid black;">
+                                            <td style="text-align:center;border: 1px solid black;">
+                                                <t t-esc="counter"/>
+                                            </td>
+                                            <td style="text-align: center;border: 1px solid black;">
+                                                <!-- <span style="text-decoration: underline;" t-field="line.product_id.display_name"/><br/> -->
+                                                <span t-if="line.name" t-field="line.name"/>
+                                            </td>
+                                            <td style="text-align: center;border: 1px solid black;">
+                                                <span t-field="line.price_unit" 
+          t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                            </td>
+                                            <td style="text-align: center;border: 1px solid black;">
+                                                <span t-field="line.product_uom_qty"/>
+                                            </td>
+                                            <td style="text-align: center;border: 1px solid black;">
+                                                <t t-if="line.tax_id">
+                                                    <t t-foreach="line.tax_id" t-as="tax">
+                                                        <span t-esc="int(tax.amount)"/>%<br/>
+                                                    </t>
+                                                </t>
+                                                <t t-else="">0%</t>
+                                            </td>
+                                            <td style="text-align: center;border: 1px solid black;">
+                                                <span t-esc="line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"
+                                                />
+                                            </td>
+                                            <td style="text-align: center;border: 1px solid black;">
+                                                <t t-set="gst_total" t-value="0"/>
+                                                <t t-if="line.tax_id">
+                                                    <t t-foreach="line.tax_id" t-as="tax">
+                                                        <t t-set="gst_total" t-value="gst_total + (line.price_subtotal * tax.amount / 100)"/>
+                                                    </t>
+                                                </t>
+                                                <span t-esc="gst_total" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"
+                                                />
+                                            </td>
+                                            <!-- <td style="text-align: center; background-color: white;">
+                                                <span t-esc="'%0.2f' % line.price_subtotal"/>
+                                            </td> -->
+                                            <td style="text-align: center; background-color: white;border: 1px solid black;">
+                                                <t t-set="line_gst_total" t-value="0"/>
+                                                <t t-if="line.tax_id">
+                                                    <t t-foreach="line.tax_id" t-as="tax">
+                                                        <t t-set="line_gst_total" t-value="line_gst_total + (line.price_subtotal * tax.amount / 100)"/>
+                                                    </t>
+                                                </t>
+                                                <t t-set="line_total_with_gst" t-value="line.price_subtotal + line_gst_total"/>
+                                                <span t-esc="line_total_with_gst" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                                <!-- Total block after last product line -->
+                                <tr style="border: 1px solid black;">
+                                    <td style="background-color: white;border: 1px solid black;" colspan="5" rowspan="6"></td>
+                                </tr>
+                                <tr style="border: 1px solid black;">
+                                    <td colspan="3" style="text-align: left; background-color: white;border: 1px solid black;">
+                                        <strong>Total Without GST</strong>
+                                        <span style="float: right;" t-esc="(doc.amount_untaxed or 0.0)" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                    </td>
+                                </tr>
+                                <tr style="border: 1px solid black;">
+                                    <td colspan="3" style="text-align: left; background-color: white;border: 1px solid black;">
+                                        <strong>Total Taxes</strong>
+                                        <span style="float: right;" t-esc="(doc.amount_tax or 0.0)" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                    </td>
+                                </tr>
+                            
+                                <tr style="border: 1px solid black;">
+                                    <td colspan="3" style="text-align: left; background-color: white;border: 1px solid black;">
+                                        <strong>Total Amount</strong>
+                                        <span style="float: right;" t-esc="(
+                                            doc.currency_id.round(doc.amount_total) if doc.amount_total else 0.0)" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                    </td>
+                                </tr>
+                                <tr style="border: 1px solid black;">
+                                    <td colspan="3" style="text-align: left; background-color: white;border: 1px solid black;">
+                                        <strong>Total Amount (Rounded)</strong>
+                                        <span style="float: right;" t-esc="(
+                                            doc.currency_id.round(doc.amount_total_rounded) if doc.amount_total_rounded else 0.0)" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                      
+                                    </td>
+                                </tr>
+                                <!-- <tr>
+                                    <td colspan="3" style="text-align: left; background-color: white;">
+                                        <strong>Round-off Amount</strong>
+                                        <span style="float: right;" t-esc="'%0.2f' % (doc.amount_roundoff or 0.0)"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="text-align: left; background-color: white;">
+                                        <strong>Total (Rounded)</strong>
+                                        <span style="float: right;" t-esc="'%0.2f' % (doc.amount_total_rounded or 0.0)"/>
+                                    </td>
+                                </tr> -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <span t-field="doc.note" t-attf-style="#{'text-align:justify;text-justify:inter-word;' if doc.company_id.terms_type != 'html' else ''}" name="order_note"/>
+                        <p t-if="not is_html_empty(doc.payment_term_id.note)">
+                            
+                        </p>
+                        <div class="oe_structure"/>
+                        
+                    </div>
+                    <div style="page-break-inside: avoid;">
+                        <div class="row mt-5">
+                            <p> Purchase Order <span>&#38;</span> Payment in the name of Micro Access Pvt. Ltd., Payable @ Rajkot.<br/>
+                            GSTIN:- <t t-esc="res_company.vat"/></p>
+                        </div>
+
+                        <div class="row" style="margin-left: 40px;">
+                            <b style="font-weight: normal;">For <span t-field="doc.company_id"/></b><br/><br/>
+                            <b style="font-weight: normal;"><span t-field="doc.user_id"/></b><br/>
+                            <b t-if="doc.user_id.phone" style="font-weight: normal;"><span t-field="doc.user_id.phone"/></b>
+                            <b t-else="doc.user_id.mobile" style="font-weight: normal;"><span t-field="doc.user_id.mobile"/></b><br/>
+                            <b t-if="doc.user_id.function" style="font-weight: normal;"><b>( </b><span t-esc="doc.user_id.function"/><b> )</b></b>
+                        </div>
+                    </div>
+
+
+                    <div class="footer">
+                        <div class="row">
+                            <div class="col text-center" style="font-size: 12px; font-weight: bold;">
+                                <span>"Dhruva House", 3rd Floor, Rashtriya Shala Main Road, | Off. Dr. Yagnik Road | Rajkot - 360002 | Gujarat (IN) | India </span><br/>
+                                <span>Ph: 0281-2463837/ Support 98795 28289</span>
+                            </div>
+                        </div>
+                        <!-- <div class="row">
+                            <div class="col-3 text-left" style="font-size: 12px; font-weight: bold; border-left: 1px solid black; padding-left: 5px;">
+                                <span>Doc. No.:</span>
+                            </div>
+                            <div class="col-3 text-left" style="font-size: 12px; font-weight: bold; border-left: 1px solid black; padding-left: 5px;">
+                                <span>Rev. No.:</span>
+                            </div>
+                            <div class="col-3 text-left" style="font-size: 12px; font-weight: bold; border-left: 1px solid black; padding-left: 5px;">
+                                <span>Rev. Date:</span>
+                            </div>
+                            <div class="col-3 text-left" style="font-size: 12px; font-weight: bold; border-left: 1px solid black; padding-left: 5px;">
+                                <span>Last Log On:</span>
+                            </div>
+                        </div> -->
+                    </div>
+                </t>
+            </t>
+        </t> 
+    </template>
+
+    <!-- Code to set desried paper format for Sale order -->
+    <record id="paperformat_custom_sale" model="report.paperformat">
+        <field name="name"> Sale Order</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">15</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">4</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- Report Action -->
+    <record id="custom_report_action" model="ir.actions.report">
+        <field name="name">Microaccess Custom SO Report</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">Microaccess_Sales.custom_report_views</field>
+        <field name="report_file">Microaccess_Sales.custom_report_views</field>
+        <field name="attachment" eval="False"/> 
+        <field name="paperformat_id" ref="Microaccess_Sales.paperformat_custom_sale"/>
+        <field name="binding_model_id" ref="model_sale_order"/>
+        <field name="binding_type">report</field> <!-- Shows under the "Print" button -->
+        <field name="print_report_name">'Sale-Order-%s.' % (object.name or "Sale Order")</field>
+    </record>
+    
+</odoo>

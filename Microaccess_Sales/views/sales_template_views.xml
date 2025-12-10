@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Record to add custom fields in Quotation form view -->
+    <record id="view_quotation_template_form_inherit" model="ir.ui.view">
+        <field name="name">quotation.template.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="customer_status"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="partner_invoice_id"/>
+                <field name="partner_shipping"/>
+                <field name="partner_shipping_contact"/>
+                <field name="partner_shipping_mobile"/>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_shipping_mobile']" position="after">
+                <field name="subject"/>
+                <field name="cancel_remarks" invisible = "state != 'cancel'"/>
+                <field name="remarks_cancel_ids" invisible = "state != 'cancel'"/>
+            </xpath>
+
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="customer_po_no"/>
+                <field name="customer_po_date"/>
+                <field name="terms_id"/>
+                <field name="expected_delivery_date"/> 
+                <field name="billing_period" invisible = "amc_terms_name != 'AMC Sale'"/> 
+                <field name="amc_type" invisible = "amc_terms_name != 'AMC Sale'"/> 
+                <field name="amc_start_date" invisible = "amc_terms_name != 'AMC Sale'"/> 
+                <field name="amc_end_date" invisible = "amc_terms_name != 'AMC Sale'"/>
+            </xpath>
+
+            <xpath expr="//field[@name='tax_totals']" position="after">
+                <group class="oe_subtotal_footer">
+                    <field name="is_enabled_roundoff"/>
+                    <field name="amount_total_rounded" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                </group>
+            </xpath>
+
+            <!-- Latest changes starts -->
+            <xpath expr="//field[@name='payment_term_id']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+            <!-- Latest changes ends -->
+           
+        </field>
+    </record>  
+
+    <!-- Record to add custom fields in Quotation Tree view -->
+    <record id="view_quotation_template_tree_inherit" model="ir.ui.view">
+        <field name="name">quotation.template.tree.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="subject"/>
+            </xpath>
+
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="cancel_remarks"/>
+                <field name="remarks_cancel_ids"/>
+            </xpath>
+
+            <!-- Remove the original Total column -->
+            <xpath expr="//field[@name='amount_total']" position="replace"/>
+            
+            <!-- Move total column at the end and Reinsert Total at the end with summary -->
+            <xpath expr="//field[@name='remarks_cancel_ids']" position="after">
+                <field name="amount_total" sum="Total"/>
+            </xpath>
+        </field>
+    </record> 
+   
+    <!-- Record to remove default:"My Quotations" filter from Quotations tree view to show only records which are in Quotation state and not all records -->
+    <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
+        <field name="context">{}</field>
+        <field name="domain">[('state', 'in', ('draft', 'sent','cancel'))]</field>
+    </record>
+
+    <!-- Record to add custom fields in Sale Orders Tree view -->
+    <record id="view_saleorder_template_tree_inherit" model="ir.ui.view">
+        <field name="name">saleorder.template.tree.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="string">Order Number</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='date_order']" position="after">
+                <field name="commitment_date"/>
+                <field name="expected_date"/>
+            </xpath>
+
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="state"/>
+            </xpath>
+
+            <xpath expr="//field[@name='activity_ids']" position="attributes">
+                <attribute name="optional">1</attribute>
+            </xpath>
+           
+        </field>
+    </record> 
+    
+</odoo>

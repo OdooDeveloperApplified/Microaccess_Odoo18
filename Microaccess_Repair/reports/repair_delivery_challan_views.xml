@@ -1,0 +1,230 @@
+<?xml version="1.0"?>
+<odoo>
+    <template id="repair_delivery_challan_report"> 
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page" style="font-size:100%;">
+                        <div class="row mb-2 text-center">
+                            <h4><b>DELIVERY CHALLAN</b></h4>
+                        </div>
+                       
+                        <div class="row mb-2">
+                            <div class="col-4 text-center border-end border-dark">
+                                <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" style="height:65px; width: 180px;" alt="Logo"/>
+                            </div>
+                            <div class="col-8 ms-3 d-flex align-items-center">
+                                <span t-field="res_company.street"/><br/>
+                                <span t-field="res_company.street2"/>
+                                <span t-field="res_company.city"/>-<span t-field="res_company.zip"/>
+                                <span t-field="res_company.state_id.name"/>
+                                <span t-field="res_company.country_id.name"/><br/>
+                                <span t-field="res_company.phone"/>, <span t-field="res_company.mobile"/><br/>
+                                <span t-field="res_company.email"/>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2 border border-dark">
+                            <div class="col-8 ms-3 border-end border-dark">
+                                <span>Customer</span><br/>
+                                <t t-if="o.customer_name">
+                                    <span t-esc="o.customer_name"/><br/>
+                                </t>
+                                
+                                <!-- Otherwise, show the regular Partner info -->
+                                <t t-else="">
+                                    <span t-field="o.partner_id.name"/><br/>
+                                    <span t-field="o.partner_id.street"/><span t-field="o.partner_id.street2"/><br/>
+                                    <span t-field="o.partner_id.city"/>|<span t-field="o.partner_id.state_id"/>|<span t-field="o.partner_id.zip"/>
+                                </t>
+                                <!-- <span t-field="o.partner_id.name"/><br/>
+                                <span t-field="o.partner_id.street"/><span t-field="o.partner_id.street2"/><br/>
+                                <span t-field="o.partner_id.city"/>|<span t-field="o.partner_id.state_id"/>|<span t-field="o.partner_id.zip"/> -->
+                            </div>
+                            <div class="col-4 px-3 py-2">
+                                <div class="pb-1 mb-2 border-bottom border-dark">
+                                    <b>No.:</b> <span t-field="o.name"/>
+                                </div>
+                                <div>
+                                    <b>Date.:</b> <span t-field="o.schedule_date" t-options="{'widget': 'date'}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <table width="100%" style="border:1px solid black;margin-top:2px;page-break-inside: avoid;">
+                            <t t-set="b" t-value="0"/>
+                            <t t-set="sr" t-value="1"/>
+                            <t t-set="total_qty" t-value="0"/>
+                            <t t-set="count" t-value="0"/>
+                            <thead>
+                                <tr height="10" style="background-color:#E9E9E9;">
+                                    <th width="1%" style="text-align:center;vertical-align:middle;border:1px solid black;">Sr. No.</th>
+                                    <th width="65%" style="text-align:center;vertical-align:middle;border:1px solid black;">Description</th>
+                                    <th width="10%" style="text-align:center;vertical-align:middle;border:1px solid black;">Qty</th>
+                                    <th width="24%" style="text-align:center;vertical-align:middle;border:1px solid black;">Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Static Row -->
+                                <tr>
+                                    <td style="text-align:center;border:1px solid black;"><span t-esc="sr"/></td>
+                                    <td style="word-break:break-word;text-align:left;border:1px solid black;">
+                                        <b>Product Return</b><br/>
+                                        <span t-field="o.ticket_id.name"/><br/>
+                                        <b>Sr.No.:</b> <span t-field="o.ticket_id.serial_no"/>
+                                    </td>
+                                    <td style="text-align:center;border:1px solid black;">
+                                        <span t-field="o.ticket_id.qty" t-options="{'widget': 'float', 'precision': 0}"/>
+                                        <t t-set="b" t-value="b + o.ticket_id.qty"/>
+                                    </td>
+                                    <td style="text-align:left;border:1px solid black;">
+                                        <t t-if="count==0">
+                                            <t t-foreach="o.remarks_ids" t-as="r">
+                                                <span t-esc="r.name"/>,
+                                            </t><br/>
+                                            <span t-field="o.remarks_description"/>
+                                            <t t-set="count" t-value="1"/>
+                                        </t>
+                                    </td>
+                                </tr>
+
+                                <!-- Dynamic Product Rows -->
+                                <!-- <t t-foreach="o.move_ids.mapped('product_id')" t-as="l1">
+                                    <tr>
+                                        <td style="text-align:center;border:1px solid black;"><span t-esc="sr"/></td>
+                                        <td style="word-break:break-word;text-align:left;border:1px solid black;">
+                                            <b><span t-esc="l1.name"/></b><br/>
+                                            <t t-foreach="o.move_ids.filtered(lambda x: x.product_id.id == l1.id)" t-as="l">
+                                                <t t-if="l.lot_id.name"><span t-esc="l.lot_id.name"/>, </t>
+                                            </t>
+                                        </td>
+                                        <t t-set="u" t-value="0"/>
+                                        <td style="text-align:center;border:1px solid black;">
+                                            <t t-foreach="o.move_ids.filtered(lambda x: x.product_id.id == l1.id)" t-as="d">
+                                                <t t-set="u" t-value="u + d.quantity"/>
+                                            </t>
+                                            <span t-esc="u" t-options="{'widget': 'float', 'precision': 0}"/>
+                                        </td>
+                                        <td style="text-align:left;border:1px solid black;">&amp;nbsp;</td>
+                                        <t t-set="sr" t-value="sr + 1"/>
+                                    </tr>
+                                </t> -->
+                                <t t-set="sr" t-value="1"/>
+                                <t t-foreach="o.move_ids" t-as="l1">
+                                    <tr>
+                                        <td style="text-align:center;border:1px solid black;">
+                                            <span t-esc="sr"/>
+                                        </td>
+                                        <td style="word-break:break-word;text-align:left;border:1px solid black;">
+                                            <b><span t-esc="l1.product_id.name"/></b><br/>
+                                            <t t-foreach="l1.move_line_ids" t-as="ml">
+                                                <t t-if="ml.lot_id">
+                                                    <span t-esc="ml.lot_id.name"/><span>, </span>
+                                                </t>
+                                            </t>
+                                        </td>
+                                        <td style="text-align:center;border:1px solid black;">
+                                            <span t-esc="l1.quantity" t-options="{'widget': 'float', 'precision': 0}"/>
+                                        </td>
+                                        <td style="text-align:left;border:1px solid black;">&amp;nbsp;</td>
+                                        <t t-set="sr" t-value="sr + 1"/>
+                                    </tr>
+                                </t>
+
+                                <!-- Filler Row -->
+                                <tr height="100">
+                                    <td style="border:1px solid black;">&amp;nbsp;</td>
+                                    <td style="border:1px solid black;">&amp;nbsp;</td>
+                                    <td style="border:1px solid black;">&amp;nbsp;</td>
+                                    <td style="border:1px solid black;">&amp;nbsp;</td>
+                                </tr>
+
+                                <!-- Footer Row -->
+                                <tr>
+                                    <td style="text-align:center;border:1px solid black;">&amp;nbsp;</td>
+                                    <td style="text-align:left;border:1px solid black;">
+                                        <b>Note:</b> <t t-esc="o.internal_notes"/>
+                                    </td>
+                                    <td style="text-align:center;border:1px solid black;">
+                                        <t t-set="total_qty" t-value="0"/>
+                                        <t t-foreach="o.move_ids" t-as="l">
+                                            <t t-set="total_qty" t-value="total_qty + l.quantity"/>
+                                        </t>
+                                        <span t-esc="total_qty + b" t-options='{"widget": "float", "precision": 0}'/>
+                                    </td>
+                                    <td style="text-align:right;border:1px solid black;">&amp;nbsp;</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div style="border:1px solid black;margin-top:2px;margin-bottom:2px;">
+                            <span style="margin-left:6px;">RECEIVED THE ABOVE MENTIONED GOODS IN ORDER</span>
+                        </div>
+
+                        <div style="page-break-inside: avoid">
+                            <div class="row border border-dark" style="font-size: 14px; ">
+                                <div class="col-6 text-start px-2 py-2">
+                                    <span t-field="o.partner_id.name"/><br/>
+                                    <b>Name:</b><br/>
+                                    <b>Phone:</b><br/>
+                                    <b>Signature:</b><br/>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <div><b>FOR, MICRO ACCESS PVT.LTD.</b></div>
+                                    <div class="text-end">
+                                        <img t-if="res_company.stamp"
+                                            t-att-src="image_data_uri(res_company.stamp)"
+                                            style="width: 80px; height: 80px; margin-left: 10px;" alt="Stamp"/>
+                                    </div>
+                                    <div style="padding-bottom:2px;">Authorised Signatory</div>
+                                </div>
+                            </div>
+
+                            <div class="row border-end border-start border-dark px-2 " style="font-size: 12px; font-weight: bold;">
+                                <div class="col-3">
+                                    <span>Doc.No.:</span>
+                                </div>
+                                <div class="col-3 border-start border-dark px-2">
+                                    <span>Rev.No.:</span>
+                                </div>
+                                <div class="col-3 border-start border-dark px-2">
+                                    <span>Rev. Date.:</span>
+                                </div>
+                                <div class="col-3 border-start border-dark px-2">
+                                    <span>Last Log On:</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="paperformat_repair_delivery_challan" model="report.paperformat">
+        <field name="name"> Repair Delivery Challan</field>
+        <field name="default" eval="True" />
+        <field name="format">A5</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">5</field>
+        <field name="margin_bottom">5</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">4</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- Report Action -->
+    <record id="repair_delivery_challan_action" model="ir.actions.report">
+        <field name="name">Repair Delivery Challan</field>
+        <field name="model">repair.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">Microaccess_Repair.repair_delivery_challan_report</field>
+        <field name="report_file">Microaccess_Repair.repair_delivery_challan_report</field>
+        <field name="paperformat_id" ref="Microaccess_Repair.paperformat_repair_delivery_challan"/>
+       
+    </record>
+</odoo>
+        

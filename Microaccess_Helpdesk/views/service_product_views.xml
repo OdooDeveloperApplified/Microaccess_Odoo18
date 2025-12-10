@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Service Products Form View -->
+    <record id="view_service_product_form" model="ir.ui.view">
+        <field name="name">service.product.form</field>
+        <field name="model">service.product</field>
+        <field name="arch" type="xml">
+            <form string="Service Products">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="uom_id"/>
+                        </group>
+                        <group>
+                            <field name="description"/>
+                        </group>
+                    </group>
+                </sheet>
+
+                <!-- Chatter -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Service Products Tree View -->
+    <record id="view_service_product_tree" model="ir.ui.view">
+        <field name="name">service.product.tree</field>
+        <field name="model">service.product</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="uom_id"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </record>
+
+    
+    <!-- Service Products Action -->
+    <record id="action_service_product" model="ir.actions.act_window">
+        <field name="name">Service Products</field>
+        <field name="res_model">service.product</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage Service Products.
+            </p>
+        </field>
+    </record>
+
+    <!-- Service Products Menu under Helpdesk > Configuration -->
+    <menuitem id="menu_service_product"
+              name="Service Products"
+              parent="helpdesk.helpdesk_menu_config"
+              action="action_service_product"
+              sequence="25"
+              />
+</odoo>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>   
+    <record id="view_returnable_challan_close_wizard_form" model="ir.ui.view">
+        <field name="name">returnable.challan.close.wizard.form</field>
+        <field name="model">returnable.challan.close.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Close Challan">
+                <group>
+                    <field name="challan_id"/>
+                    <field name="reason"/>
+                    <field name="return_date"/>
+                </group>
+                <footer>
+                    <button string="Done" type="object" name="action_close_challan" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Record to add custom fields in Tranfers form view -->
+    <record id="view_transfer_template_form_inherit" model="ir.ui.view">
+        <field name="name">transfer.template.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='backorder_id']" position="before">
+                <field name="is_return"/>
+            </xpath>
+
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="cus_po_date"/>
+                <field name="cus_po_no"/>
+                <field name="remarks" widget="many2many_tags" invisible="picking_type_code != 'outgoing'"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Record to add custom fields in Transfers tree view of inventory module -->
+    <record id="view_tranfer_tree_inherit" model="ir.ui.view">
+        <field name="name">transfer.tree.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_done']" position="after">
+                <field name="invoice_ids" widget="many2many_tags"/>
+            </xpath>
+
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="remarks" widget="many2many_tags" invisible="picking_type_code != 'outgoing'"/>
+            </xpath>
+
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="is_return"/>
+            </xpath>
+        </field>
+    </record>
+    <!-- Code to add smart button to show related PO or SO on the receipts/delivery -->
+    <record id="view_stock_picking_form_inherit_orders_button" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.orders.button</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='oe_button_box']" position="inside">
+                <button class="oe_stat_button" name="action_open_related_order"
+                        type="object"
+                        icon="fa-dollar"
+                        >
+                    <field name="related_order_button_label" widget="statinfo" nolabel="1"/>
+                </button>
+            </xpath>
+            
+        </field>
+    </record>
+</odoo>

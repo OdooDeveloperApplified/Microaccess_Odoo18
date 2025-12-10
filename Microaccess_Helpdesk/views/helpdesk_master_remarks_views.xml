@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Remarks Master Form View -->
+    <record id="view_remarks_master_form" model="ir.ui.view">
+        <field name="name">remarks.master.form</field>
+        <field name="model">remarks.master</field>
+        <field name="arch" type="xml">
+            <form string="Remarks While Receiving Ticket">
+                <sheet>
+                    <group>
+                        <field name="receiving_name"/>
+                    </group>
+                </sheet>
+
+                <!-- Chatter -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Remarks Master Tree View -->
+    <record id="view_remarks_master_tree" model="ir.ui.view">
+        <field name="name">remarks.master.tree</field>
+        <field name="model">remarks.master</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="receiving_name"/>
+            </list>
+        </field>
+    </record>
+  
+    <!-- Remarks Master Action -->
+    <record id="action_remarks_master" model="ir.actions.act_window">
+        <field name="name">Remarks While Receiving Ticket</field>
+        <field name="res_model">remarks.master</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage Remarks Master.
+            </p>
+        </field>
+    </record>
+
+    <!-- ################################################################################################################# -->
+
+    <!-- Nature of Problem Form View -->
+    <record id="view_nature_of_problem_form" model="ir.ui.view">
+        <field name="name">nature.of.problem.form</field>
+        <field name="model">nature.problem</field>
+        <field name="arch" type="xml">
+            <form string="Nature Of Problem">
+                <sheet>
+                    <group>
+                        <field name="nature_problem"/>
+                    </group>
+                </sheet>
+
+                <!-- Chatter -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Nature Of Problem Tree View -->
+    <record id="view_nature_of_problem_tree" model="ir.ui.view">
+        <field name="name">nature.of.problem.tree</field>
+        <field name="model">nature.problem</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="nature_problem"/>
+            </list>
+        </field>
+    </record>
+  
+    <!-- Nature Problem Action -->
+    <record id="action_nature_of_problem" model="ir.actions.act_window">
+        <field name="name">Nature Of Problem</field>
+        <field name="res_model">nature.problem</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage Nature Of Problem.
+            </p>
+        </field>
+    </record>
+
+    <!-- ################################################################################################################# -->
+
+    <!-- Solved Remarks Form View -->
+    <record id="view_solve_remarks_form" model="ir.ui.view">
+        <field name="name">solve.remarks.form</field>
+        <field name="model">solve.remarks</field>
+        <field name="arch" type="xml">
+            <form string="Solved Remarks">
+                <sheet>
+                    <group>
+                        <field name="solve_remarks"/>
+                    </group>
+                </sheet>
+
+                <!-- Chatter -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Solved Remarks Tree View -->
+    <record id="view_solve_remarks_tree" model="ir.ui.view">
+        <field name="name">solve.remarks.tree</field>
+        <field name="model">solve.remarks</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="solve_remarks"/>
+            </list>
+        </field>
+    </record>
+  
+    <!-- Solved Remarks Action -->
+    <record id="action_solve_remarks" model="ir.actions.act_window">
+        <field name="name">Solved Remarks</field>
+        <field name="res_model">solve.remarks</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage Solved Remarks.
+            </p>
+        </field>
+    </record>
+
+    <!-- ################################################################################################################# -->
+
+    <!-- Ticket Type Tree View -->
+    <record id="view_ticket_type_tree" model="ir.ui.view">
+        <field name="name">ticket.type.tree</field>
+        <field name="model">ticket.type</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" string="Tag" sample="1">
+                <field name="sequence" widget="handle"/>
+                <field name="name" placeholder="e.g. Question"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="helpdesk_ticket_type_view_form" model="ir.ui.view">
+        <field name="name">ticket.type.form</field>
+        <field name="model">ticket.type</field>
+        <field name="arch" type="xml">
+            <form string="Tag">
+                <group>
+                    <field name="sequence" invisible="1"/>
+                    <field name="name"/>
+                </group>
+            </form>
+        </field>
+    </record>
+  
+    <!-- Ticket Type Action -->
+    <record id="action_ticket_type" model="ir.actions.act_window">
+        <field name="name">Ticket Type</field>
+        <field name="res_model">ticket.type</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage Ticket type.
+            </p>
+        </field>
+    </record>
+
+    <!-- ################################################################################################################# -->
+
+    <!-- Master Menu under Helpdesk > Configuration -->
+    <menuitem id="menu_master_root"
+              name="Master"
+              parent="helpdesk.helpdesk_menu_config"
+              sequence="40"
+              />
+
+    <!-- Remarks Master sub-menu under Helpdesk > Configuration > Master -->
+    <menuitem id="menu_remarks_master"
+              name="Remarks While Receiving Tickets"
+              parent="Microaccess_Helpdesk.menu_master_root"
+              action="action_remarks_master"
+              sequence="10"
+              />
+
+    <!-- Nature of Problem sub-menu under Helpdesk > Configuration > Master -->
+    <menuitem id="menu_nature_of_problem"
+              name="Nature Of Problem"
+              parent="Microaccess_Helpdesk.menu_master_root"
+              action="action_nature_of_problem"
+              sequence="20"
+              />
+
+    <!-- Solve Remarks sub-menu under Helpdesk > Configuration > Master -->
+    <menuitem id="menu_solve_remarks"
+              name="Solve Remarks"
+              parent="Microaccess_Helpdesk.menu_master_root"
+              action="action_solve_remarks"
+              sequence="30"
+              />
+
+    <!-- Ticket Type sub-menu under Helpdesk > Configuration > Master -->
+    <menuitem id="menu_ticket_type"
+              name="Ticket Type"
+              parent="Microaccess_Helpdesk.menu_master_root"
+              action="action_ticket_type"
+              sequence="40"
+              />
+</odoo>

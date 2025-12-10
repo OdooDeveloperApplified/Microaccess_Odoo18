@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <!-- Quotation Revision History page in RFQ form view -->
+        <record id="quotation_revision_history_view_id" model="ir.ui.view">
+            <field name="name">quotation.revision.history.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/> 
+            <field name="arch" type="xml">
+                
+                <xpath expr="//button[@name='action_confirm']" position="after">
+                    <button name="so_revision_quote" 
+                            string="Quotation Revision" 
+                            type="object" 
+                            invisible="state == 'sale'"
+                            class="btn-primary"/>
+                </xpath>
+
+                <xpath expr="//notebook/page[@name='customer_signature']" position="after">
+                    <page string="Quotation History">
+                        <field name="revision_ids">
+                            <list>
+                                <field name="name" readonly="1"/>
+                                <field name="revision_date"/>
+                                <!-- <field name="sale_id" invisible="1"/> -->
+                            </list>
+                            <form>
+                                <group>
+                                    <group>
+                                        <field name="name" readonly="1"/>
+                                        <field name="revision_date"/>
+                                    </group>
+                                    <group>
+                                        <field name="sale_id" invisible="1"/>
+                                    </group>
+                                </group>
+                                <field name="history_line_ids" nolabel="1">
+                                </field>
+                            </form>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

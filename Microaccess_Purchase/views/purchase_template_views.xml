@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Record to add custom fields in RFQ form view of pruchase module -->
+    <record id="view_purchase_template_form_inherit" model="ir.ui.view">
+        <field name="name">purchase.template.form.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_ref']" position="after">
+                <field name="against_selection"/>
+                <field name="shipping_address"/>
+                <field name="other_address_reports" invisible="shipping_address == 'micro'"/>
+                <field name="purchase_sale_order2" widget="many2many_tags" required = "against_selection == 'against_order'"/>
+                <field name="purchase_repair_order" widget="many2many_tags"/>
+            </xpath>
+
+            <!-- <xpath expr="//field[@name='picking_type_id']" position="after">
+                <field name="is_enabled_roundoff"/>
+            </xpath> -->
+
+            <!-- Code to change the string from "Order Deadline" to "Order date" of the field named date_order -->
+            <xpath expr="//field[@name='date_order']" position="attributes">
+                <attribute name="string">Order Date</attribute>
+            </xpath>
+
+            <!-- Code to change the string from "Tax excl." to "Sub Total" of the field named price_subtotal-->
+            <!-- <xpath expr="//field[@name='order_line']/tree/field[@name='price_subtotal']" position="attributes">
+                <attribute name="string">Subtotal</attribute>
+            </xpath> -->
+
+            <!-- Code to change the string from "Expected Arrival" to "Receipt Date " of the field named date_planned-->
+            <xpath expr="//field[@name='date_planned']" position="attributes">
+                <attribute name="string">Receipt Date</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='price_unit']" position="replace">
+               <field name="price_unit" string="Unit Price"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_purchase_order_form_inherit_custom" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit.custom</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='products']//field[@name='tax_totals']" position="after">
+                <group class="oe_subtotal_footer">
+                    <field name="is_enabled_roundoff" />
+                    <field name="amount_total_rounded" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Record to add custom fields in RFQ tree view of RFQ in purchase module -->
+    <record id="view_purchase_template_tree_inherit" model="ir.ui.view">
+        <field name="name">purchase.template.tree.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_kpis_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="purchase_sale_order2" widget="many2many_tags"/>
+            </xpath>
+            <!-- Code to change the string from "Order Deadline" to "Order date" of the field named date_order -->
+            <xpath expr="//field[@name='date_order']" position="replace">
+                <field name="date_order"
+                   widget="datetime"
+                   string="Order Date"
+                   readonly="state in ['cancel', 'done', 'purchase']"
+                   optional="show"/>
+            </xpath>
+
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="string">Purchase Representative</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="string">Purchase Order</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Record to rename field's name in tree view of Purchase Order  -->
+    <record id="view_purchase_order_template_tree_inherit" model="ir.ui.view">
+        <field name="name">purchase.order.template.tree.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_planned']" position="attributes">
+                <attribute name="string">Receipt Date</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="string">Purchase Representative</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- Record to add and rename fields in Purchase Order History  -->
+    <record id="view_purchase_order_history_tree_inherit" model="ir.ui.view">
+        <field name="name">purchase.order.history.tree.inherit</field>
+        <field name="model">purchase.order.line</field>
+        <field name="inherit_id" ref="purchase.purchase_history_tree"/>
+        <field name="arch" type="xml">
+
+            <!-- Code to change the string from "Order No" to "Purchase Order No." of the field named date_order -->
+            <xpath expr="//field[@name='order_id']" position="attributes">
+                <attribute name="string">Purchase Order No.</attribute>
+            </xpath>
+            <!-- Code to replace Partner with Vendor -->
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="string">Vendor</attribute>
+            </xpath>
+            <!-- Code to replace Confirmation date with PO Confirmation date -->
+            <xpath expr="//field[@name='date_approve']" position="attributes">
+                <attribute name="string">PO Confirmation Date</attribute>
+            </xpath>
+            <!-- Code to replace Total Quantity with Product Quantity -->
+            <xpath expr="//field[@name='product_uom_qty']" position="replace">
+                <field name="product_qty"/>
+            </xpath>
+            <!-- Code to add Received quantity after Product Quantity -->
+            <xpath expr="//field[@name='product_qty']" position="after">
+                <field name="qty_received"/>
+            </xpath>
+            <!-- Code to add Item Description after Order no. -->
+            <xpath expr="//field[@name='order_id']" position="after">
+                <field name="name"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_company_form_inherit_stamp" model="ir.ui.view">
+        <field name="name">res.company.form.stamp</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="Microaccess_Sales.view_company_footer_image_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='footer_image']" position="after">
+                <field name="stamp" widget="image" class="oe_avatar" options="{'preview_image': 'stamp'}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

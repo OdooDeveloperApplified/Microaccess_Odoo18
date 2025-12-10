@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_repair_tag,access.repair.tag,Microaccess_Repair.model_repair_tag,base.group_user,1,1,1,1
+
+

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="seq_repair_custom" model="ir.sequence">
+        <field name="name">Repair.Order.Custom</field>
+        <field name="code">repair.order.custom</field>
+        <field name="prefix">RMA/</field>  
+        <field name="padding">5</field>
+        <field name="number_increment">1</field>
+        <field name="use_date_range">False</field>
+    </record>
+</odoo>

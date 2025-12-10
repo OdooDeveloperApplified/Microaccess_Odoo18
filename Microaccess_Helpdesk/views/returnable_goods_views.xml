@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Returnable Goods Form View -->
+    <record id="view_returnable_goods_form" model="ir.ui.view">
+        <field name="name">returnable.goods.form</field>
+        <field name="model">returnable.goods</field>
+        <field name="arch" type="xml">
+            <form string="Returnable Goods">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button name="action_start_progress" type="object" string="In Progress" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_repair" type="object" string="Repair &amp; Return" class="oe_highlight" invisible="state != 'in_progress'"/>
+                    <button name="action_return_without_repair" type="object" string="Return Without Repair" class="oe_highlight" invisible="state != 'in_progress'"/>
+                    <button name="action_cancel" type="object" string="Cancel" class="oe_secondary" invisible="state not in ('draft', 'in_progress')"/>
+                </header>
+                <sheet>
+                    <h1>
+                        <field name="challan_no" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="ticket_id" readonly="1"/>
+                            <field name="repair_order_id" readonly="1"/>
+                            <field name="return_date"/>
+                            
+                        </group>
+                        <group>
+                            <field name="customer_id"/>
+                            <field name="customer_name"/>
+                            <field name="challan_date"/>
+                            <field name="remarks" widget = "many2many_tags"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Product Details">
+                            <field name="returnable_goods_line_ids" readonly="state != 'draft'">
+                               
+                                <list editable="bottom">
+                                    <control>
+                                        <create string="Add a product"/>
+                                        <create string="Add a section" context="{'default_display_type': 'line_section'}"/>
+                                        <create string="Add a note" context="{'default_display_type': 'line_note'}"/>
+                                    </control>
+                                    <field name="product_name"/>
+                                    <field name="description"/>
+                                    <field name="serial_no"/>
+                                    <field name="qty_available"/>
+                                    <field name="qty" required="1" sum="Total Qty"/>
+                                    <field name="return_qty" readonly="1"/>
+                                    
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Return Received Details">
+                            <field name="return_received_qty_ids" readonly="state != 'draft'" >
+                                <list>
+                                    <field name="product_name"/>
+                                    <field name="serial_no"/>
+                                    <field name="qty"/>
+                                    <field name="subsidiary_challan_no"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Estimate">
+                            <group>
+                                <group>
+                                    <field name="over_estimate" readonly="over_estimate_readonly"/>
+                                    <field name="revised_estimate" />
+                                </group>
+                                <group>
+                                    <field name="customer_estimate"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Follow Up">
+                            <field name="followup_line_ids">
+                                <list editable="bottom">
+                                    <field name="followup_date"/>
+                                    <field name="followup_text"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <!-- Chatter -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Returnable Goods Tree View -->
+    <record id="view_returnable_goods_tree" model="ir.ui.view">
+        <field name="name">returnable.goods.tree</field>
+        <field name="model">returnable.goods</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false">
+                <field name="challan_no"/>
+                <field name="challan_date"/>
+                <field name="partner_id"/>
+                <field name="ticket_id"/>
+                <field name="remarks"/>
+                <field name="return_date"/>
+                <field name="customer_id"/>
+                <field name="state" widget="badge" decoration-success="state == 'repair'" decoration-info="state == 'return'" decoration-warning="state == 'in_progress'" decoration-danger="state == 'cancel'" decoration-muted="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+    
+
+    <!-- Draft Returnable Goods Action -->
+    <record id="action_returnable_goods_draft" model="ir.actions.act_window">
+        <field name="name">Draft</field>
+        <field name="res_model">returnable.goods</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_returnable_goods_tree"/>
+        <field name="domain">[('state', '=', 'draft')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage Draft Returnable Goods.
+            </p>
+        </field>
+    </record>
+
+    <!-- In Progress Returnable Goods Action -->
+    <record id="action_returnable_goods_progress" model="ir.actions.act_window">
+        <field name="name">In Progress</field>
+        <field name="res_model">returnable.goods</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_returnable_goods_tree"/>
+        <field name="domain">[('state', '=', 'in_progress')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage In Progress Returnable Goods.
+            </p>
+        </field>
+    </record>
+
+    <!-- Returned Returnable Goods Action -->
+    <record id="action_returnable_goods_returned" model="ir.actions.act_window">
+        <field name="name">Returned</field>
+        <field name="res_model">returnable.goods</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_returnable_goods_tree"/>
+        <field name="domain">[('state', 'in', ['repair', 'return', 'cancel'])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage Repaired and Returned Returnable Goods.
+            </p>
+        </field>
+    </record>
+
+    <!-- Returnable Goods Menu under Helpdesk -->
+    <menuitem id="menu_returnable_goods"
+              name="In-Out Challan"
+              parent="helpdesk.menu_helpdesk_root"
+              sequence="15"
+              />
+    <menuitem id="menu_returnable_goods_draft"
+              name="Draft"
+              parent="Microaccess_Helpdesk.menu_returnable_goods"
+              action="action_returnable_goods_draft"
+              sequence="10"
+              />
+    <menuitem id="menu_returnable_goods_progress"
+              name="In Progress"
+              parent="Microaccess_Helpdesk.menu_returnable_goods" 
+              action="action_returnable_goods_progress"
+              sequence="20"
+              />
+    <menuitem id="menu_returnable_goods_returned"
+              name="Returned"
+              parent="Microaccess_Helpdesk.menu_returnable_goods" 
+              action = "action_returnable_goods_returned"
+              sequence="30"
+              />
+</odoo>

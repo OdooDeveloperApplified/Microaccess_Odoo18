@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Micro Remarks Form View -->
+    <record id="view_micro_remarks_form" model="ir.ui.view">
+        <field name="name">micro.remarks.form</field>
+        <field name="model">micro.remarks</field>
+        <field name="arch" type="xml">
+            <form string="Remarks">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+
+                <!-- Chatter -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Micro Remarks Tree View -->
+    <record id="view_micro_remarks_list" model="ir.ui.view">
+        <field name="name">micro.remarks.list</field>
+        <field name="model">micro.remarks</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    
+    <!-- Micro Remarks Action -->
+    <record id="action_micro_remarks" model="ir.actions.act_window">
+        <field name="name">Remarks</field>
+        <field name="res_model">micro.remarks</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage Remarks.
+            </p>
+        </field>
+    </record>
+    
+    <!-- ###################################################################################################################### -->
+
+    <!-- Sales Cancel Remarks Form View -->
+    <record id="view_sales_cancel_remarks_form" model="ir.ui.view">
+        <field name="name">sales.cancel.remarks.form</field>
+        <field name="model">remarks.remarks</field>
+        <field name="arch" type="xml">
+            <form string="Sales Cancel Remarks">
+                <sheet>
+                    <group>
+                        <field name="remarks"/>
+                    </group>
+                </sheet>
+
+                <!-- Chatter -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Sales Cancel Remarks Tree View -->
+    <record id="view_sales_cancel_remarks_list" model="ir.ui.view">
+        <field name="name">sales.cancel.remarks.list</field>
+        <field name="model">remarks.remarks</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="remarks"/>
+            </list>
+        </field>
+    </record>
+    
+    <!-- Sales Cancel Remarks Action -->
+    <record id="action_sales_cancel_remarks" model="ir.actions.act_window">
+        <field name="name">Sales Cancel Remarks</field>
+        <field name="res_model">remarks.remarks</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage Sales Cancel Remarks.
+            </p>
+        </field>
+    </record>
+    
+    <!-- ###################################################################################################################### -->
+
+    <!-- Terms and Conditions Form View -->
+    <record id="view_terms_condition_form" model="ir.ui.view">
+        <field name="name">terms.conditions.form</field>
+        <field name="model">terms.conditions</field>
+        <field name="arch" type="xml">
+            <form string="Terms and Conditions">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+
+                <!-- Chatter -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+     <!-- Terms and Conditions Tree View -->
+    <record id="view_terms_conditions_list" model="ir.ui.view">
+        <field name="name">terms.conditions.list</field>
+        <field name="model">terms.conditions</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="description" optional="True"/>
+            </list>
+        </field>
+    </record>
+
+    
+    <!-- Terms and Conditions Action -->
+    <record id="action_terms_conditions" model="ir.actions.act_window">
+        <field name="name">Terms and Conditions</field>
+        <field name="res_model">terms.conditions</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage Terms and Conditions.
+            </p>
+        </field>
+    </record>
+    
+    <!-- ###################################################################################################################### -->
+
+    <!-- Master Menu under Sales > Configuration -->
+    <menuitem id="menu_sales_master_root"
+            name="Master"
+            parent="sale.menu_sale_config"
+            sequence="80"/>
+
+    <!-- Micro Remarks Menu under Master -->
+    <menuitem id="menu_micro_remarks"
+            name="Micro Remarks"
+            parent="Microaccess_Sales.menu_sales_master_root"
+            action="action_micro_remarks"
+            sequence="10"/>
+
+    <!-- Sales Cancel Remarks Menu under Master -->
+    <menuitem id="menu_sales_cancel_remarks"
+            name="Sales Cancel Remarks"
+            parent="Microaccess_Sales.menu_sales_master_root"
+            action="action_sales_cancel_remarks"
+            sequence="20"/>
+
+    <!-- T&C Menu under Master -->
+    <menuitem id="menu_terms_conditions"
+            name="Terms and Conditions"
+            parent="Microaccess_Sales.menu_sales_master_root"
+            action="action_terms_conditions"
+            sequence="30"/>
+
+</odoo>

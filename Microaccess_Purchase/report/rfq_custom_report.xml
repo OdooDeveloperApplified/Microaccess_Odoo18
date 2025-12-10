@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Document Layout template -->
+    <template id="document_layout_custom_rfq" >
+        <t t-call="web.external_layout">
+            <!-- HEADER -->
+            <div class="header">
+                <div class ="row">
+                    <div class="col-4">
+                        <img t-if="res_company.logo" class="o_company_logo_big" t-att-src="image_data_uri(res_company.logo)" alt="Logo"/>
+                    </div>
+                    <div class="col-8">
+                        <ul class="list-unstyled" name="company_address_list">
+                            <li t-if="res_company.is_company_details_empty">
+                                <span t-field="res_company.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'>
+                                    <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 w-100 opacity-75 text-muted text-center">
+                                        <strong>Company address block</strong>
+                                        <div>Contains the company address.</div>
+                                    </div>
+                                </span>
+                            </li>
+                            <li t-else="">
+                                <span t-field="res_company.company_details">
+                                    <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 w-100 opacity-75 text-muted text-center">
+                                        <strong>Company details block</strong>
+                                        <div>Contains the company details.</div>
+                                    </div>
+                                </span>
+                            </li>
+                            <li t-if="not forced_vat"/>
+                            <li t-else="">
+                                <t t-esc="res_company.country_id.vat_label or 'Tax ID'">Tax ID</t>:
+                                <span t-esc="forced_vat">US12345671</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-12">
+                    <strong>Billed To:</strong><br/>
+                    <span t-esc="o.company_id.name"/><br/>
+                    <span t-esc="o.company_id.street"/><br/>
+                    <span t-esc="o.company_id.city"/>
+                    <t t-if="o.company_id.state_id">, <span t-esc="o.company_id.state_id.name"/></t>
+                    <t t-if="o.company_id.zip"> - <span t-esc="o.company_id.zip"/></t>
+                </div>
+            </div>
+            <div class="row">       
+                <div class="col-6">
+                <t t-if="o.shipping_address == 'micro'">
+                        <strong class="d-block mb-1">Shipping Address:</strong>
+                        <div >
+                            <span t-esc="o.company_id.name"/><br/>
+                            <span t-esc="o.company_id.street"/><br/>
+                            <t t-if="o.company_id.street2"><span t-esc="o.company_id.street2"/><br/></t>
+                            <span t-esc="o.company_id.city"/>
+                            <t t-if="o.company_id.state_id">, <span t-esc="o.company_id.state_id.name"/></t>
+                            <t t-if="o.company_id.zip"> - <span t-esc="o.company_id.zip"/></t><br/>
+                            <t t-if="o.company_id.country_id"><span t-esc="o.company_id.country_id.name"/><br/></t>
+                            <t t-if="o.company_id.phone">
+                                <span>
+                                    <i class="fa fa-phone" aria-hidden="true"></i>
+                                    <t t-esc="o.company_id.phone"/>
+                                </span>
+                            </t>
+                        </div>
+                        
+                    </t>
+                    <t t-elif="o.shipping_address == 'order' and o.other_address_reports">
+                        <strong class="d-block mb-1">Shipping Address:</strong>
+                        <div>
+                            <span t-esc="o.other_address_reports.name"/><br/>
+                            <span t-esc="o.other_address_reports.street"/><br/>
+                            <t t-if="o.other_address_reports.street2"><span t-esc="o.other_address_reports.street2"/><br/></t>
+                            <span t-esc="o.other_address_reports.city"/>
+                            <t t-if="o.other_address_reports.state_id">, <span t-esc="o.other_address_reports.state_id.name"/></t>
+                            <t t-if="o.other_address_reports.zip"> - <span t-esc="o.other_address_reports.zip"/></t><br/>
+                            <t t-if="o.other_address_reports.country_id"><span t-esc="o.other_address_reports.country_id.name"/></t><br/>
+                            <t t-if="o.company_id.phone">
+                                <span>
+                                    <i class="fa fa-phone" aria-hidden="true"></i>
+                                    <t t-esc="o.company_id.phone"/>
+                                </span>
+                            </t>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <!-- fallback to default delivery address -->
+                        <t t-if="o.dest_address_id">
+                            <strong class="d-block mb-1">Shipping address:</strong>
+                            <div t-field="o.dest_address_id"
+                                t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True, "phone_icons": True}' name="purchase_shipping_address"/>
+                        </t>
+                    </t>
+                </div>
+                <div class="col-6">
+                    <strong class="d-block mb-1">Vendor/Supplier Address:</strong>
+                    <div t-field="o.partner_id"
+                    t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
+                    <t t-if="o.partner_id.vat">
+                            <div>GSTIN:<span t-out="o.partner_id.vat"/></div>
+                        </t>
+                </div>
+            </div>
+            <!-- Inner content -->
+            <div>
+                <t t-out="0"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- Report content section (Inner content) -->
+    <template id="rfq_report_views">
+            
+        <t t-call="web.html_container">
+            
+            <t t-foreach="docs" t-as="o">
+                
+                <t t-call="Microaccess_Purchase.document_layout_custom_rfq">
+                    <!-- <t t-call="web.external_layout"> -->
+                    <!-- <t t-set="o" t-value="o.with_context(lang=o.partner_id.lang)"/> -->  
+                    <div class="page">
+                        <!-- <div class="oe_structure"/> -->
+                        <div class="mt-4 mb-2" style="font-size:30px;">
+                             <t t-if="o.state in ['draft', 'sent', 'to approve']">Request for Quotation #<span t-field="o.name"/></t>
+                            <t t-if="o.state in ['purchase', 'done']">Purchase Order #<span t-field="o.name"/></t>
+                            <t t-if="o.state == 'cancel'">Cancelled Purchase Order #<span t-field="o.name"/></t>
+                        </div>
+
+                        <table class=" table table-borderless o_table_striped">
+                            <thead>
+                                <tr>
+                                    <th name="th_description"><strong>Description</strong></th>
+                                    <th name="th_expected_date" class="text-center"><strong>Expected Date</strong></th>
+                                    <th name="th_quantity" class="text-end"><strong>Qty</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.order_line" t-as="order_line">
+                                    <tr t-att-class="'fw-bold o_line_section' if order_line.display_type == 'line_section' else 'fst-italic o_line_note' if order_line.display_type == 'line_note' else ''">
+                                        <t t-if="not order_line.display_type">
+                                            <td id="product">
+                                                <span t-field="order_line.name"/>
+                                            </td>
+                                            <td class="text-center">
+                                                <span t-field="order_line.date_planned"/>
+                                            </td>
+                                            <td class="text-end">
+                                                <span t-field="order_line.product_qty"/>
+                                                <span t-field="order_line.product_uom" groups="uom.group_uom"/>
+                                                <span t-if="order_line.product_packaging_id">
+                                                    (<span t-field="order_line.product_packaging_qty" t-options='{"widget": "integer"}'/> <span t-field="order_line.product_packaging_id"/>)
+                                                </span>
+                                            </td>
+                                        </t>
+                                        <t t-else="">
+                                            <td colspan="99" id="section">
+                                                <span t-field="order_line.name"/>
+                                            </td>
+                                        </t>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <div style="page-break-inside: avoid; display: inline-block; width: 100%;">
+                            <div style="page-break-inside: avoid;">
+                                <p t-field="o.notes"/>
+                            </div>
+
+                            <div class="text-start" style="line-height: 0.5; page-break-inside: avoid;">
+                                <p style="margin: 0;">This is System Generated Purchase Order And Does Not Require Signature</p>
+                                <p style="margin-top: 15px;">For <t t-esc="o.company_id.name"/></p>
+                                <img t-if="o.company_id.stamp" t-att-src="image_data_uri(o.company_id.stamp)"
+                                    alt="Company Stamp" style="width: 80px; height: auto;"/>
+                                <p style="margin: 0;"><t t-esc="o.user_id.name"/></p>
+                            </div>
+                        </div>
+
+                        <div class="oe_structure"/>
+
+                        <!-- <strong>Payment Terms: </strong>
+                        <span t-field="o.payment_term_id" class="mt-4"></span> -->
+
+                        <t t-set="base_address" t-value="o.env['ir.config_parameter'].sudo().get_param('web.base.url')"/>
+                        <t t-set="portal_url" t-value="base_address + '/my/purchase/' + str(o.id) + '#portal_connect_software_modal'"/>
+                        <div t-if="any(u._is_portal() for u in o.partner_id.user_ids)" class="text-center">
+                            <a t-att-href="portal_url">Connect your software</a> with <t t-out="o.company_id.name"/> to create quotes automatically.
+                        </div>
+                    </div>
+                     <div class="footer">
+                        <div class="row">
+                            <div class="col text-center">
+                                <span t-field="o.company_id.report_footer"/>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            <!-- </t> -->
+            </t>
+        </t> 
+    </template>
+
+    <!-- Code to set desried paper format for Sale order -->
+    <!-- <record id="paperformat_custom_sale" model="report.paperformat">
+        <field name="name"> Sale Order</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">15</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">4</field>
+        <field name="dpi">90</field>
+    </record> -->
+
+    <!-- Report Action -->
+    <record id="rfq_report_action" model="ir.actions.report">
+        <field name="name">Microaccess Custom RFQ Report</field>
+        <field name="model">purchase.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">Microaccess_Purchase.rfq_report_views</field>
+        <field name="report_file">Microaccess_Purchase.rfq_report_views</field>
+        <field name="attachment" eval="False"/> 
+        <!-- <field name="paperformat_id" ref="Microaccess_Sales.paperformat_custom_sale"/> -->
+        <field name="binding_model_id" ref="model_purchase_order"/>
+        <field name="binding_type">report</field> <!-- Shows under the "Print" button -->
+        <field name="print_report_name">'RFQ-%s.' % (object.name or "RFQ")</field>
+    </record>
+    
+</odoo>

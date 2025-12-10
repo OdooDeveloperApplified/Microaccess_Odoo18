@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Record to add Brand field in Product form view -->
+    <record id="view_product_template_form_inherit_brand" model="ir.ui.view">
+        <field name="name">product.template.form.inherit.brand</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='type']" position="after">
+                <field name="brand_id" widget="many2one"/>
+                <field name="auto_add_to_sale"/>
+            </xpath>
+            
+        </field>
+    </record>
+
+    <!-- Record to add Brand field in Product tree view -->
+    <record id="view_product_template_tree_inherit_brand" model="ir.ui.view">
+        <field name="name">product.template.tree.inherit.brand</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="brand_id" widget="many2one"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Record to add Brand field in Product Variant form view -->
+    <record id="view_product_variant_template_form_inherit_brand" model="ir.ui.view">
+        <field name="name">product.product.form.inherit.brand</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='type']" position="after">
+                <field name="brand_id" widget="many2one"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Record to add Brand field in Product Variant tree view -->
+    <record id="view_product_variant_tree_inherit_brand" model="ir.ui.view">
+        <field name="name">product.product.tree.inherit.brand</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="brand_id" widget="many2one"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- Record to add following field in Product form view -->
+    <record id="view_product_template_form_inherit_e_invoicing" model="ir.ui.view">
+        <field name="name">product.template.form.inherit.e.invoicing</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='brand_id']" position="after">
+                <field name="is_service_product_for_e_invoicing"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Record to add Warranty page besides Sales page in product form view notebook -->
+    <record id="view_product_template_form_inherit_warranty" model="ir.ui.view">
+        <field name="name">product.template.form.inherit.warranty</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <!-- Locate the Sales page and insert Warranty page after it -->
+            <xpath expr="//page[@name='sales']" position="after">
+                <page name="warranty" string="Warranty">
+                    <group string = "Product Warranty">
+                        <group>
+                            <field name="allow_warranty"/>
+                            <field name="allow_warranty_renew"/>
+                        </group>
+                        <group>
+                            <field name="warranty_period"/>
+                            <field name="period"/>
+                            <field name="warranty_type"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

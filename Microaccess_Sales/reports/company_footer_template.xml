@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Record to add footer image field in company form view -->
+    <record id="view_company_footer_image_inherit" model="ir.ui.view">
+        <field name="name">company.footer.image.inherit</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='currency_id']" position="after">
+                <field name="footer_image" widget="image" options="{'size': [0, 50]}"/>
+            </xpath>
+        </field>
+    </record> 
+</odoo>

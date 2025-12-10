@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Pipeline Master Form View -->
+    <record id="view_pipeline_master_form" model="ir.ui.view">
+        <field name="name">pipeline.master.form</field>
+        <field name="model">pipeline.master</field>
+        <field name="arch" type="xml">
+            <form string="Pipeline Master">
+                <sheet>
+                    <group>
+                        <field name="pipeline"/>
+                    </group>
+                </sheet>
+
+                <!-- Chatter -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Pipeline Master Tree View -->
+    <record id="view_pipeline_master_list" model="ir.ui.view">
+        <field name="name">pipeline.master.list</field>
+        <field name="model">pipeline.master</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="pipeline"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Pipeline Master Action -->
+    <record id="action_pipeline_master" model="ir.actions.act_window">
+        <field name="name">Pipeline Master</field>
+        <field name="res_model">pipeline.master</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage Pipeline Master.
+            </p>
+        </field>
+    </record>
+    
+    <!-- ###################################################################################################################### -->
+
+    <!-- Source of Prospect Form View -->
+    <record id="view_source_prospect_form" model="ir.ui.view">
+        <field name="name">source.prospect.form</field>
+        <field name="model">prospect.source</field>
+        <field name="arch" type="xml">
+            <form string="Source of Prospect">
+                <sheet>
+                    <group>
+                        <field name="source"/>
+                    </group>
+                </sheet>
+
+                <!-- Chatter -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Source of Prospect Tree View -->
+    <record id="view_source_prospect_list" model="ir.ui.view">
+        <field name="name">source.prospect.list</field>
+        <field name="model">prospect.source</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="source"/>
+            </list>
+        </field>
+    </record>
+
+    
+    <!-- Source of Prospect Action -->
+    <record id="action_prospect_source" model="ir.actions.act_window">
+        <field name="name">Source of Prospect</field>
+        <field name="res_model">prospect.source</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage Source of Prospect.
+            </p>
+        </field>
+    </record>
+    
+    <!-- ###################################################################################################################### -->
+
+    <!-- Master Menu under CRM > Configuration -->
+    <menuitem id="menu_crm_master_root"
+              name="Master"
+              parent="crm.crm_menu_config"
+              sequence="20"
+              />
+
+    <!-- Pipeline Master Menu under CRM > Configuration > Master -->
+    <menuitem id="menu_crm_pipeline_master"
+              name="Pipeline Master"
+              parent="Microaccess_CRM.menu_crm_master_root"
+              action="action_pipeline_master"
+              sequence="1"
+              />
+    
+    <!-- Source of Prospect Menu under CRM > Configuration > Master -->
+    <menuitem id="menu_crm_source_prospect"
+              name="Source of Prospect"
+              parent="Microaccess_CRM.menu_crm_master_root"
+              action="action_prospect_source"
+              sequence="2"
+              />
+</odoo>

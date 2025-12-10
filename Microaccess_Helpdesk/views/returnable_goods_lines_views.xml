@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Returnable Goods Lines Form View -->
+    <record id="view_returnable_goods_lines_form" model="ir.ui.view">
+        <field name="name">returnable.goods.lines.form</field>
+        <field name="model">returnable.goods.line</field>
+        <field name="arch" type="xml">
+            <form string="Returnable Goods Line">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="returnable_goods_id"/>
+                            <field name="product_name"/>
+                            <field name="description"/>
+                            <field name="uom_id"/>
+                            <field name="return_qty"/>
+                            <field name="rate"/>
+                            <field name="qty_available"/>
+                            <field name="today_return_date"/>
+                        </group>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="serial_no"/>
+                            <field name="hsn_code_id"/>
+                            <field name="qty"/>
+                            <field name="is_received"/>
+                            <field name="amount"/>
+                            <field name="dummy_qty_available"/>
+                            <field name="display_type"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Draft Returnable Goods Action -->
+    <record id="action_returnable_goods_line" model="ir.actions.act_window">
+        <field name="name">Returnable Goods Line</field>
+        <field name="res_model">returnable.goods.line</field>
+        <field name="view_mode">form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage Returnable Goods Line.
+            </p>
+        </field>
+    </record>
+</odoo>

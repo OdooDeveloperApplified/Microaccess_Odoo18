@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Record to add custom fields in Contacts form view -->
+    <record id="view_contact_template_form_inherit" model="ir.ui.view">
+        <field name="name">contact.template.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='o_address_format']" position="after">
+                
+                <field name="contact_person"/>
+                <field name="surname"/>
+                <field name="category_ids"/>
+                <!-- code for daily call contact functionality -->
+                <field name="is_lead_contact"/> 
+            </xpath>
+
+           
+
+            <!-- Code to make job_position field visible even when is_company = True: by default it is only visible when contact is type Individual -->
+            <xpath expr="//field[@name='function']" position="attributes">
+                <attribute name="invisible"/>
+            </xpath>
+
+            <xpath expr="//field[@name='website']" position="before">
+                <field name="customer_support_email"/>
+            </xpath>
+
+            <!-- Code to change the string from "Tax ID" to "GSTIN" of the field named vat -->
+            <xpath expr="//field[@name='vat']" position="attributes">
+                <attribute name="string">GSTIN</attribute>
+            </xpath>
+
+            <xpath expr="//page[@name='internal_notes']" position="after">
+                <page name="visiting_card" string="Visiting Card">
+                    <group>
+                        <group>
+                            <field name="visiting_card_front" widget="image" class="oe_avatar" options="{'preview_image':'visiting_card_front', 'zoom':true, 'background':false}"/>
+                            <field name="visiting_card_back" widget="image" class="oe_avatar" options="{'preview_image':'visiting_card_back', 'zoom':true, 'background':false}"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+            <xpath expr="//field[@name='city']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='zip']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

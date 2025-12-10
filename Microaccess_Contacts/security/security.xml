@@ -1,0 +1,13 @@
+<odoo>
+    <data>
+
+        <record model="res.groups" id="no_product_group">
+            <field name="name">No Product creation</field>
+        </record>
+
+        <record model="res.groups" id="no_contact_group">
+            <field name="name">No Contact creation</field>
+        </record>
+        
+    </data>
+</odoo>

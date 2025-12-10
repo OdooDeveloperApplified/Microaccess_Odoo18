@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Record to Block/Unblock buttons and smart buttons in Product form view -->
+    <record id="view_product_template_form_inherit_brand" model="ir.ui.view">
+        <field name="name">product.template.form.inherit.brand</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <!-- Block/Unblock Stat buttons -->
+            <xpath expr="//button[@name='action_open_documents']" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button class="oe_stat_button" name="action_view_blocked_quantity" type="object" icon="fa-lock">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value"><field name="blocked_quantity"/></span>
+                            <span class="o_stat_text">Blocked Quantity</span>
+                        </div>
+                    </button>
+                </div>
+                <div class="oe_button_box" name="button_box">
+                    <button class="oe_stat_button" name="action_view_unblocked_quantity" type="object" icon="fa-unlock">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value"><field name="unblocked_quantity"/></span>
+                            <span class="o_stat_text">Unblocked Quantity</span>
+                        </div>
+                    </button>
+                </div>
+            </xpath>
+            <!-- Block/Unblock Update buttons -->
+            <xpath expr="//header/button" position="after">
+                <button 
+                    name="action_open_blocked_quantity" 
+                    type="object" 
+                    string="Block Quantity" 
+                    />
+                <button 
+                    name="action_open_unblocked_quantity" 
+                    type="object" 
+                    string="Unblock Quantity" 
+                    />
+            </xpath>
+        </field>
+    </record>
+</odoo>

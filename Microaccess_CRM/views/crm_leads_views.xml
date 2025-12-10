@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Record to add custom fields in leads form view of crm module -->
+    <record id="view_crm_lead_form_inherit" model="ir.ui.view">
+        <field name="name">crm.lead.form.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='website']" position="after">
+                <!-- <field name="language"/> -->
+                <field name="priority1"/>
+                <field name="pipeline_ids" widget="many2many_tags"/>
+                <field name="source_ids" widget="many2many_tags"/>
+            </xpath>
+
+            <!-- Target the div containing the mobile field and insert new fields after it -->
+            <xpath expr="//div[field[@name='mobile']]" position="after">
+                <field name="contact_name2"/>
+                <field name="mobile2"/>
+                <field name="create_date"/>
+                
+            </xpath>
+
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                    <field name="is_decision_maker_identified"/>
+                    <field name="is_decision_maker_contacted"/>
+            </xpath>
+
+            <!-- Latest changes starts -->
+            <!-- Code to hide priority field -->
+            <xpath expr="//group[@name='lead_priority']/field[@name='priority']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <!-- Latest changes ends -->
+
+            <xpath expr="//page[@name='extra']//group[@name='categorization']/field[@name='medium_id']" position="after">
+                <field name="call_type"/>
+            </xpath>
+
+            <xpath expr="//field[@name='create_date']" position="attributes">
+                <attribute name="string">Visit Date</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='create_date']" position="after">
+                <field name="next_visit_date"/>
+            </xpath>
+
+            <!-- Code to replace existing contact name  -->
+            <!-- <xpath expr="//group[@name='lead_info']/label[@for='contact_name']" position="replace">
+                <label for ="contact_person"/>
+            </xpath>
+
+            <xpath expr="//group[@name='lead_info']/div[@class='o_row'][field[@name='contact_name']]" position="replace">
+                <div class="o_row">
+                    <field name="contact_person"/>
+                    <field name="surname"/>
+                </div>
+            </xpath> -->
+            
+            <xpath expr="//label[@for='email_from_group_lead_info']" position="before">
+                <field name="contact_person" readonly="1"/>
+                <field name="surname" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- Record to add custom fields in leads tree view of crm module -->
+    <record id="view_crm_lead_tree_inherit" model="ir.ui.view">
+        <field name="name">crm.lead.tree.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='country_id']" position="after">
+                <field name="lost_reason_id"/>
+            </xpath>
+            
+            <xpath expr="//field[@name='team_id']" position="after">
+                <field name="activity_summary" string="Last Activity"/>
+            </xpath>
+
+            <xpath expr="//field[@name='contact_name']" position="attributes">
+                <attribute name="optional"></attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='create_date']" position="attributes">
+                <attribute name="optional"></attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='phone']" position="attributes">
+                <attribute name="optional">0</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='create_date']" position="attributes">
+                <attribute name="string">Created on</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Record to change the string named "Leads" to "Cold call"-->
+    <record id="crm.crm_lead_all_leads" model="ir.actions.act_window">
+        <field name="name">Cold Call</field>
+    </record>
+
+    <!-- Record to add custom fields in pipeline form view of crm module -->
+    <record id="view_crm_pipeline_form_inherit_1" model="ir.ui.view">
+        <field name="name">crm.pipeline.form.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lost_reason_id']" position="before">
+                    <!-- <field name="language"/> -->
+                    <field name="priority1"/>
+                    <field name="pipeline_ids" widget="many2many_tags"/>
+                    <field name="source_ids" widget="many2many_tags"/>
+            </xpath>
+            
+
+        </field>
+    </record>
+
+    
+    <!-- Code to add above custom fields in pipeline form view which has different action ID but same model and external ID as lead form view -->
+    <record id="crm.crm_lead_action_pipeline" model="ir.actions.act_window">
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_crm_pipeline_form_inherit_1"/>
+    </record>
+
+    <!-- Record to change the menu named "Leads" to "Daily Call" -->
+    <record id="crm.crm_menu_leads" model="ir.ui.menu">
+        <field name="name">Daily Call</field>
+    </record>
+
+    <!-- Record to make changes in My Quotation Tree view -->
+    <record id="view_crm_quotation_tree_inherit" model="ir.ui.view">
+        <field name="name">crm.quotation.tree.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree"/>
+        <field name="arch" type="xml">
+            <!-- Code to add Order date in the tree view -->
+            <xpath expr="//field[@name='create_date']" position="after">
+                <field name="date_order"/>
+            </xpath>
+            <!-- Code to make Activities column option which by default is always shown in tree view -->
+            <xpath expr="//field[@name='activity_ids']" position="attributes">
+                <attribute name="optional">1</attribute>
+            </xpath>
+            <!-- Code to change rename Number field into Quotation Number -->
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="string">Quotation Number</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

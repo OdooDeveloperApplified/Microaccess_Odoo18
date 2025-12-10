@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_micro_remarks,access.micro.remarks,Microaccess_Sales.model_micro_remarks,base.group_user,1,1,1,1
+access_remarks_remarks,access.remarks.remarks,Microaccess_Sales.model_remarks_remarks,base.group_user,1,1,1,1
+access_terms_conditions,access.terms.conditions,Microaccess_Sales.model_terms_conditions,base.group_user,1,1,1,1
+access_revision_history,access.revision.history,Microaccess_Sales.model_revision_history,base.group_user,1,1,1,1
+access_revision_history_line,access.revision.history.line,Microaccess_Sales.model_revision_history_line,base.group_user,1,1,1,1
+access_sale_order_cancel_wizard,access.sale.order.cancel.wizard,Microaccess_Sales.model_sale_order_cancel_wizard,base.group_user,1,1,1,1
+

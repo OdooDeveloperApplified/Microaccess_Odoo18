@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Return Quantity Line Tree View -->
+    <record id="view_return_quantity_line_tree" model="ir.ui.view">
+        <field name="name">return.quantity.line.tree</field>
+        <field name="model">return.quantity.line</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" create="false" delete="false">
+                <field name="return_qty_id" invisible="1"/>
+                <field name="returnable_goods_line_id" invisible="1"/>
+                <field name="product_id" invisible="1" readonly="0"/>
+                <field name="product_name"/>
+                <field name="description" readonly="0"/>
+                <field name="serial_no"/>
+                <field name="hsn_code_id" invisible="1" readonly="0"/>
+                <field name="uom_id" invisible="1" readonly="0"/>
+                <field name="qty" readonly="0"/>
+                <field name="rate" invisible="1"/>
+                <field name="amount" invisible="1"/>
+                <field name="subsidiary_challan_no"/>
+                <field name="return_qty" required="1"/>
+                <field name="return_date" invisible="0"/>
+                
+            </list>
+        </field>
+    </record>
+
+    <!-- Return Quantity Line Form View -->
+    <record id="view_return_quantity_line_form" model="ir.ui.view">
+        <field name="name">return.quantity.line.form</field>
+        <field name="model">return.quantity.line</field>
+        <field name="arch" type="xml">
+            <form string="Return Quantity Line">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="returnable_goods_line_id"/>
+                            <field name="product_id"/>
+                            <field name="product_name"/>
+                            <field name="description"/>
+                            <field name="serial_no"/>
+                        </group>
+                        <group>
+                            <field name="hsn_code_id"/>
+                            <field name="uom_id"/>
+                            <field name="qty"/>
+                            <field name="return_qty"/>
+                            <field name="subsidiary_challan_no"/>
+                            <field name="return_date"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Main Wizard Form View - Matching Your Structure -->
+    <record id="view_return_received_qty_wizard_form" model="ir.ui.view">
+        <field name="name">return.received.qty.wizard.form</field>
+        <field name="model">return.received.qty.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Return Quantity">
+                <sheet>
+                    <!-- <group>
+                        <field name="returnable_goods_id" readonly="1"/>
+                        <field name="subsidiary_challan_no"/>
+                        <field name="return_date"/>
+                    </group> -->
+                    <notebook>
+                        <page string="Return Quantity">
+                            <field name="return_quantity_line_ids">
+                                <list editable="bottom" create="0" delete="0">
+                                    <!-- <field name="return_qty_id" invisible="1"/> -->
+                                    
+                                    <!-- <field name="product_id" invisible="1" readonly="0"/> -->
+                                    <field name="product_name"/>
+                                    <field name="description" readonly="0"/>
+                                    <field name="serial_no"/>
+                                    <!-- <field name="hsn_code_id" invisible="1" readonly="0"/> -->
+                                    <!-- <field name="uom_id" invisible="1" readonly="0"/> -->
+                                    <field name="qty"/>
+                                    <!-- <field name="rate" invisible="1"/> -->
+                                    <!-- <field name="amount" invisible="1"/> -->
+                                    <field name="subsidiary_challan_no"/>
+                                    <field name="return_qty"/>
+                                    <field name="return_date"/>
+                                    <!-- <field name="original_qty" invisible="1"/> -->
+                                    <field name="returnable_goods_line_id" optional="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <footer>
+                    <button string="Confirm" type="object" name="action_confirm" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

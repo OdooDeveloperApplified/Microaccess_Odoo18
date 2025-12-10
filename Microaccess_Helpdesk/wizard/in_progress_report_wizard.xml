@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_helpdesk_report_wizard" model="ir.ui.view">
+        <field name="name">helpdesk.report.wizard.form</field>
+        <field name="model">helpdesk.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="In Progress Report Wizard">
+                <group>
+                    <group>
+                        <field name="from_date"/>
+                        <field name="to_date"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_generate_report" string="Generate Report" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+                
+            </form>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_report_wizard" model="ir.actions.act_window">
+        <field name="name">In Progress Excel Report</field>
+        <field name="res_model">helpdesk.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_helpdesk_report_wizard"/>
+        <field name="target">new</field>
+       
+    </record>
+
+    <menuitem id="menu_helpdesk_report_wizard"
+            name="In Progress Excel Report"
+            parent="helpdesk.helpdesk_ticket_report_menu_main"
+            action="action_helpdesk_report_wizard"
+            sequence="40"/>
+
+</odoo>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Record to add custom fields in Repairs form view -->
+    <record id="view_repair_template_form_inherit" model="ir.ui.view">
+        <field name="name">repair.template.form.inherit</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_return_without_repair"
+                        string="Return Without Repair"
+                        type="object"
+                        class="btn-secondary"
+                        invisible ="state in ['returned_without_repair','done']"/>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="replace">
+                <field name="user_ids" widget="many2many_tags"/>
+            </xpath>
+            <xpath expr="//field[@name='product_id']" position="replace">
+                <field name="product_service_id"/>
+            </xpath>
+            <xpath expr="//field[@name='under_warranty']" position="before">
+                <field name="warranty_expiration_date"/>
+            </xpath>
+
+            <xpath expr="//field[@name='under_warranty']" position="after">
+                <field name="ticket_id" readonly="1"/>
+                <field name="subject"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+               
+                <field name="customer_name"/>
+            </xpath>
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="invoice_method"/>
+                <field name="remarks_ids" widget="many2many_tags"/>
+                <field name="remarks_description"/>
+            </xpath>
+            <xpath expr="//field[@name='description_picking']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+
+            <!-- Code to add print repair delivery challan button which generates repair delivery report -->
+            <xpath expr="//div[@class='oe_button_box']" position="inside">
+                <button class="oe_stat_button" name="%(repair_delivery_challan_action)d" type="action" 
+                    invisible="not (state == 'done' or state == 'returned_without_repair')" icon="fa-print">
+                    <div class="o_stat_info">
+                        <!-- <span class="o_stat_value">&amp;nbsp;</span> -->
+                        <span class="o_stat_text">Delivery Challan</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Record to add custom fields in Repairs tree view of Helpdesk module -->
+    <record id="view_repair_tree_inherit" model="ir.ui.view">
+        <field name="name">repair.tree.inherit</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="partner_name"/>
+                <field name="remarks_ids" widget="many2many_tags"/>
+                <field name="remarks_description"/>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_name']" position="attributes">
+                <attribute name="string">Customer Name</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='schedule_date']" position="replace">
+                <field name="schedule_date"/>
+            </xpath>
+
+            <xpath expr="//field[@name='user_id']" position="replace">
+                <field name="user_ids" widget="many2many_tags"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Action to Open Repair Orders under Helpdesk -->
+    <record id="action_repair_orders_helpdesk" model="ir.actions.act_window">
+        <field name="name">Repair Orders</field>
+        <field name="res_model">repair.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage Repair orders.
+            </p>
+        </field>
+    </record>
+
+    <!-- Add Repair Orders to Helpdesk Menu -->
+    <menuitem id="menu_helpdesk_repair_orders"
+              name="Repair Orders"
+              parent="helpdesk.menu_helpdesk_root"
+              action="action_repair_orders_helpdesk"
+              sequence="15"/>
+</odoo>

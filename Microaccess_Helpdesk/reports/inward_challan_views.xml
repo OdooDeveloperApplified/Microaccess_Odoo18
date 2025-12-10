@@ -1,0 +1,201 @@
+<?xml version="1.0"?>
+<odoo>
+    <template id="inward_challan_report"> 
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <div class="row mb-1 text-center">
+                            <h4><b>IN WARD CHALLAN</b></h4>
+                        </div>
+                       
+                        <div class="row mb-1" style="margin-top:0;">
+                            <div class="col-4 text-center border-end border-dark">
+                                <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" style="height:65px; width: 180px;" alt="Logo"/>
+                            </div>
+                            <div class="col-8 ms-3 d-flex align-items-center">
+                                <span t-field="res_company.street"/><br/>
+                                <span t-field="res_company.street2"/>
+                                <span t-field="res_company.city"/>-<span t-field="res_company.zip"/>
+                                <span t-field="res_company.state_id.name"/>
+                                <span t-field="res_company.country_id.name"/><br/>
+                                <span t-field="res_company.phone"/>, <span t-field="res_company.mobile"/><br/>
+                                <span t-field="res_company.email"/>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-1 border border-dark" >
+                            <div class="col-7 ms-1 border-end border-dark" style="vertical-align:middle;">
+                                <span><b>Customer</b></span><br/>
+                                <!-- If custom Customer Name is provided, show that -->
+                                <t t-if="o.customer_name">
+                                    <span t-esc="o.customer_name"/><br/>
+                                </t>
+                                
+                                <!-- Otherwise, show the regular Partner info -->
+                                <t t-else="">
+                                    <span t-field="o.partner_id.name"/><br/>
+                                    <span t-field="o.partner_id.street"/><span t-field="o.partner_id.street2"/><br/>
+                                    <span t-field="o.partner_id.city"/>|<span t-field="o.partner_id.state_id"/>|<span t-field="o.partner_id.zip"/>
+                                </t>
+                                <!-- <span t-field="o.partner_id.name"/><br/>
+                                <span t-field="o.partner_id.street"/><span t-field="o.partner_id.street2"/><br/>
+                                <span t-field="o.partner_id.city"/>|<span t-field="o.partner_id.state_id"/>|<span t-field="o.partner_id.zip"/> -->
+                            </div>
+                            <div class="col-5 px-2 py-1">
+                                <div class="mb-1 border-bottom border-dark">
+                                    <b>No.:</b> <span t-field="o.ticket_ref"/>
+                                </div>
+                                <div class="mb-1 border-bottom border-dark">
+                                    <b>Date.:</b> <span t-field="o.create_date"/>
+                                </div>
+                                <div>
+                                    <b>Ticket Service Type:</b> <span t-field="o.ticket_type_service"/>
+                                </div>
+                            </div>
+                        </div>
+                        <table width="100%" style="border:1px solid black;margin-top:1px;" height="300">
+                            <t t-set="sr" t-value="1"/>
+                            <t t-set="srs" t-value="2"/>
+                            <t t-set="total_qty" t-value="0"/>
+                            <t t-set="total_quantity" t-value="0"/>
+                            <t t-set="count" t-value="0"/>
+                            <thead>
+                                <tr height="10" style="background-color:#E9E9E9;">
+                                    <th width="1%" style="text-align:center;vertical-align:middle;border:1px solid black;">Sr. No.</th>
+                                    <th width="65%" style="text-align:center;vertical-align:middle;border:1px solid black;">Description</th>
+                                    <th width="10%" style="text-align:center;vertical-align:middle;border:1px solid black;">Qty</th>
+                                    <th width="24%" style="text-align:center;vertical-align:middle;border:1px solid black;">Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr height="10">
+                                   <td width="1%" style="text-align:center;vertical-align:middle;border:1px solid black;"><span t-esc="sr"/></td>
+                                   <td width="65%" style="text-align:left;vertical-align:middle;border:1px solid black;">
+                                        &amp;nbsp;&amp;nbsp;<span t-field="o.name"/><br/>
+                                        &amp;nbsp;<b>Sr.No</b>&amp;nbsp;<span t-field="o.serial_no"/>
+                                   </td>
+                                   <td width="10%" style="text-align:center;vertical-align:middle;border:1px solid black;"><span t-field="o.qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/></td>
+                                   <td width="24%" style="text-align:center;vertical-align:middle;border-left: 1px solid black; border-right: 1px solid black;">&amp;nbsp;<span t-field="o.ticket_remarks_receiving"/></td>
+                                   <t t-set="sr" t-value="sr + 1"/>
+                                </tr>
+                                <tr height="10" t-foreach="o.product_line_ids" t-as="l">
+                                    <td width="1%" style="text-align:center;vertical-align:middle;border:1px solid black;"><span t-esc="srs"/></td>
+                                    <td width="65%" style="text-align:left;vertical-align:middle;border:1px solid black;">
+                                       &amp;nbsp;<b><span t-field="l.service_product_id"/></b><br/>
+                                       &amp;nbsp;<span t-field="l.serial_numer"/><br/>
+                                   </td>
+                                   <td width="10%" style="text-align:center;vertical-align:middle;border:1px solid black;"><span t-field="l.quantity" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/></td>
+                                   <td width="24%" style="text-align:left;vertical-align:middle;border:1px solid black;">&amp;nbsp;<span t-field="o.description"/>
+                                   </td>
+                                    <t t-set="srs" t-value="srs + 1"/>
+                                </tr>
+                                <tr>
+                                   <td width="1%" style="text-align:center;border:1px solid black;">&amp;nbsp;</td>
+                                   <td width="65%" style="text-align:left;border:1px solid black;">&amp;nbsp;</td>
+                                   <td width="10%" style="text-align:center;border:1px solid black;">&amp;nbsp;</td>
+                                   <td width="24%" style="text-align:right;border:1px solid black;">&amp;nbsp;</td>
+                                </tr>
+
+                                <tr height="10">
+                                   <td width="1%" style="text-align:center;vertical-align:middle;border:1px solid black;">&amp;nbsp;</td>
+                                   <td width="65%" style="text-align:left;vertical-align:middle;border:1px solid black;"><strong>Note:-</strong>&amp;nbsp;<span t-field="o.note_inward"/></td>
+                                   <td width="10%" style="text-align:center;vertical-align:middle;border:1px solid black;">
+                                       <t t-foreach="o.product_line_ids" t-as="l2">
+                                           <t t-set="total_qty" t-value="total_qty + l2.quantity"/>
+                                       </t>
+                                       <span t-set="total_quantity" t-value="total_qty + o.qty"/>
+                                       <span t-esc="total_quantity" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                   </td>
+                                   <td width="24%" style="text-align:right;vertical-align:middle;border:1px solid black;">&amp;nbsp;</td>
+                                </tr>
+                           </tbody>
+                        </table>
+                        <div class="row" style="border:1px solid black;vertical-align:middle;">
+                            <div class="col-12" style="margin-left:26px;">
+                                <strong>Nature of Problem:</strong> <span t-field="o.ticket_nature_problem"/>
+                            </div>
+                        </div>
+                        <div style="border:1px solid black;margin-top:1px;vertical-align:middle;">
+                            <span>RECEIVED THE ABOVE MENTIONED GOODS IN ORDER</span>
+                        </div>
+
+                        <div style="page-break-inside: avoid">
+                            <div class="row border border-dark" style="font-size: 14px; ">
+                                <div class="col-6 text-start px-2 py-2">
+                                    <span style="margin-left: 14px;"><span t-field="o.partner_id.name"/></span><br/>
+                                    <b>Name:</b><br/><br/>
+                                    <b>Phone:</b><br/><br/>
+                                    <b>Signature:</b><br/>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <div><b>FOR, MICRO ACCESS PVT.LTD.</b></div>
+                                    <div class="text-end" style="padding:5px;">
+                                        <img t-if="res_company.stamp"
+                                            t-att-src="image_data_uri(res_company.stamp)"
+                                            style="width: 80px; height: 80px; margin-left: 10px;" alt="Stamp"/>
+                                    </div>
+                                    <div style="padding-bottom:2px;">Authorised Signatory</div>
+                                </div>
+                            </div>
+
+                            <div class="row border-end border-start border-dark px-2 " style="font-size: 12px; font-weight: bold;">
+                                <div class="col-3">
+                                    <span>Doc.No.:</span>
+                                </div>
+                                <div class="col-3 border-start border-dark px-2">
+                                    <span>Rev.No.:</span>
+                                </div>
+                                <div class="col-3 border-start border-dark px-2">
+                                    <span>Rev. Date.:</span>
+                                </div>
+                                <div class="col-3 border-start border-dark px-2">
+                                    <span>Last Log On:</span>
+                                </div>
+                            </div>
+                            <div class="row" style="font-size:10px;">
+                                <div class="col-12">
+                                    .       We are not responsible for any kind of data lost.<br/>
+                                    .       We are not responsible for any component retaining at our place.<br/>
+                                    .       Any Equipment given for repair should be collected within 10 days from the date of submission after this period would not be responsible if it is lost/ misplaced.<br/>
+                                    ·       Any faulty or non-working part replaced with a good one shall not be returned to the customer as it is useful for further recycling.<br/>
+                                    ·       Please submit your Inward challan at the time of collection of your equipment.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Code to set desried paper format for Challan -->
+    <record id="paperformat_inward_challan" model="report.paperformat">
+        <field name="name"> Inward Challan</field>
+        <field name="default" eval="True" />
+        <field name="format">A5</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">5</field>
+        <field name="margin_bottom">5</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">4</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- Report Action -->
+    <record id="report_inward_challan_action" model="ir.actions.report">
+        <field name="name">Inward Challan</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">Microaccess_Helpdesk.inward_challan_report</field>
+        <field name="report_file">Microaccess_Helpdesk.inward_challan_report</field>
+        <field name="paperformat_id" ref="Microaccess_Helpdesk.paperformat_inward_challan"/>
+        <field name="binding_model_id" ref="model_helpdesk_ticket"/>
+        <field name="binding_type">report</field> <!-- Shows under the "Print" button -->
+    </record>
+</odoo>
+        

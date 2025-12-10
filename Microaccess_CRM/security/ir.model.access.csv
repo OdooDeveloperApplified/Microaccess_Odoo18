@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_pipeline_master,access.pipeline.master,Microaccess_CRM.model_pipeline_master,base.group_user,1,1,1,1
+access_combinedweekly_report_wizard,access.combinedweekly.report.wizard,Microaccess_CRM.model_combinedweekly_report_wizard,base.group_user,1,1,1,1
+access_prospect_source,access.prospect.source,Microaccess_CRM.model_prospect_source,base.group_user,1,1,1,1
+

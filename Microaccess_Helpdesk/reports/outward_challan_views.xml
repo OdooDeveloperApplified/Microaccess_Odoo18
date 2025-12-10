@@ -1,0 +1,178 @@
+<?xml version="1.0"?>
+<odoo>
+    <template id="outward_challan_report"> 
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page" style="font-size:100%;">
+                        <div class="row mb-3 text-center">
+                            <h3><b>OUT WARD CHALLAN</b></h3>
+                        </div>
+                       
+                        <div class="row mb-2">
+                            <div class="col-4 text-center border-end border-dark">
+                                <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" style="height:65px; width: 180px;" alt="Logo"/>
+                            </div>
+                            <div class="col-8 ms-3 d-flex align-items-center">
+                                <span t-field="res_company.street"/><br/>
+                                <span t-field="res_company.street2"/>
+                                <span t-field="res_company.city"/>-<span t-field="res_company.zip"/>
+                                <span t-field="res_company.state_id.name"/>
+                                <span t-field="res_company.country_id.name"/><br/>
+                                <span t-field="res_company.phone"/>, <span t-field="res_company.mobile"/><br/>
+                                <span t-field="res_company.email"/>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2 border border-dark">
+                            <div class="col-8 ms-3 border-end border-dark">
+                                <span>Vendor</span><br/>
+                                <span t-field="o.partner_id.name"/><br/>
+                                <span t-field="o.partner_id.street"/><span t-field="o.partner_id.street2"/><br/>
+                                <span t-field="o.partner_id.city"/>|<span t-field="o.partner_id.state_id"/>|<span t-field="o.partner_id.zip"/>
+                            </div>
+                            <div class="col-4 px-3 py-2">
+                                <div class="pb-1 mb-2 border-bottom border-dark">
+                                    <b>No.:</b> <span t-field="o.challan_no"/>
+                                </div>
+                                <div>
+                                    <b>Date.:</b> <span t-field="o.challan_date"/>
+                                </div>
+                            </div>
+                        </div>
+                        <table width="100%" style="border:1px solid black;margin-top:2px;" height="400">
+                            <t t-set="sr" t-value="1"/>
+                            <t t-set="total_qty" t-value="0"/>
+                            <t t-set="count" t-value="0"/>
+                            <thead>
+                                <tr height="10" style="background-color:#E9E9E9;">
+                                    <th width="1%" style="text-align:center;vertical-align:middle;border:1px solid black;">Sr. No.</th>
+                                    <th width="65%" style="text-align:center;vertical-align:middle;border:1px solid black;">Description</th>
+                                    <th width="10%" style="text-align:center;vertical-align:middle;border:1px solid black;">Qty</th>
+                                    <th width="24%" style="text-align:center;vertical-align:middle;border:1px solid black;">Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr height="10" t-foreach="o.returnable_goods_line_ids" t-as="l">
+                                    <td width="1%" style="text-align:center;border:1px solid black;border-bottom:0px;"><span t-esc="sr"/></td>
+                                    <td width="65%" style="text-align:left;border:1px solid black;border-bottom:0px;">
+                                        &amp;nbsp;<b><span t-field="l.product_name"/></b><br/>
+    
+                                        &amp;nbsp;<span t-field="l.serial_no"/><br/>
+                                        &amp;nbsp;
+                                        <t t-if="o.ticket_id.partner_name">
+                                            <span t-field="o.ticket_id.partner_name"/>
+                                        </t>
+                                        <t t-else="o.ticket_id.partner_id">
+                                                <span t-field="o.ticket_id.partner_id.name"/>
+                                            </t>
+                                        &amp;nbsp;
+                                    </td>
+                                    <td width="10%" style="text-align:center;border:1px solid black;border-bottom:0px;"><span t-field="l.qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/></td>
+                                    <td width="24%" style="text-align:left;border-left: 1px solid black; border-right: 1px solid black;">&amp;nbsp;
+                                        <t t-if="count==0">
+                                            <t t-foreach="o.remarks" t-as="r">
+                                                    <span t-esc="r.name"/>
+                                                </t>
+                                            <t t-set="count" t-value="1"/>
+                                        </t>
+                                        <t else="">
+                                            <span></span>
+                                        </t>
+                                    </td>
+                                    <t t-set="sr" t-value="sr + 1"/>
+                                </tr>
+                                <tr>
+                                    <td width="1%" style="text-align:center;border:1px solid black;border-top:0px;">&amp;nbsp;</td>
+                                    <td width="65%" style="text-align:left;border:1px solid black;border-top:0px;">&amp;nbsp;</td>
+                                    <td width="10%" style="text-align:center;border:1px solid black;border-top:0px;">&amp;nbsp;</td>
+                                    <td width="24%" style="text-align:right;border:1px solid black;border-top:0px;">&amp;nbsp;</td>
+                                </tr>
+
+                                <tr height="10">
+                                    <td width="1%" style="text-align:center;border:1px solid black;">&amp;nbsp;</td>
+                                    <td width="65%" style="text-align:left;border:1px solid black;">&amp;nbsp;</td>
+                                    <td width="10%" style="text-align:center;border:1px solid black;">
+                                        <t t-foreach="o.returnable_goods_line_ids" t-as="l2">
+                                            <t t-set="total_qty" t-value="total_qty + l2.qty"/>
+                                        </t>
+                                        <span t-esc="total_qty" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 0}"/>
+                                    </td>
+                                    <td width="24%" style="text-align:right;border:1px solid black;">&amp;nbsp;</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="border:1px solid black;margin-top:2px;margin-bottom:2px;">
+                            <span style="margin-left:6px;">RECEIVED THE ABOVE MENTIONED GOODS IN ORDER</span>
+                        </div>
+
+                        <div style="page-break-inside: avoid">
+                            <div class="row border border-dark" style="font-size: 14px; ">
+                                <div class="col-6 text-start px-2 py-2">
+                                    <span t-field="o.partner_id.name"/><br/>
+                                    <b>Name:</b><br/>
+                                    <b>Phone:</b><br/>
+                                    <b>Signature:</b>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <div><b>FOR, MICRO ACCESS PVT.LTD.</b></div>
+                                    <div class="text-end">
+                                        <img t-if="res_company.stamp"
+                                            t-att-src="image_data_uri(res_company.stamp)"
+                                            style="width: 80px; height: 80px; margin-left: 10px;" alt="Stamp"/>
+                                    </div>
+                                    <div style="padding-bottom:2px;">Authorised Signatory</div>
+                                </div>
+                            </div>
+
+                            <div class="row border-end border-start border-dark px-2 " style="font-size: 12px; font-weight: bold;">
+                                <div class="col-3">
+                                    <span>Doc.No.:</span>
+                                </div>
+                                <div class="col-3 border-start border-dark px-2">
+                                    <span>Rev.No.:</span>
+                                </div>
+                                <div class="col-3 border-start border-dark px-2">
+                                    <span>Rev. Date.:</span>
+                                </div>
+                                <div class="col-3 border-start border-dark px-2">
+                                    <span>Last Log On:</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Code to set paper format for Challan -->
+    <record id="paperformat_outward_challan" model="report.paperformat">
+        <field name="name"> Returnable Challan</field>
+        <field name="default" eval="True" />
+        <field name="format">A5</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">5</field>
+        <field name="margin_bottom">5</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">4</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- Report Action -->
+    <record id="report_outward_challan" model="ir.actions.report">
+        <field name="name">Outward Challan</field>
+        <field name="model">returnable.goods</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">Microaccess_Helpdesk.outward_challan_report</field>
+        <field name="report_file">Microaccess_Helpdesk.outward_challan_report</field>
+        <field name="paperformat_id" ref="Microaccess_Helpdesk.paperformat_outward_challan"/>
+        <field name="binding_model_id" ref="model_returnable_goods"/>
+        <field name="binding_type">report</field> <!-- Shows under the "Print" button -->
+    </record>
+</odoo>
+        

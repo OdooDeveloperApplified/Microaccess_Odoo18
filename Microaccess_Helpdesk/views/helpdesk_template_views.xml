@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Record to add custom fields in ticket form view of Helpdesk module -->
+    <record id="view_helpdesk_ticket_form_inherit" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.inherit</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='priority']" position="after">
+                <field name="ticket_type_id"/>
+            </xpath>
+            <xpath expr="//field[@name='ticket_type_id']" position="after">
+                <field name="ticket_type_service"/>
+                <field name="ticket_remarks_receiving" widget="many2many_tags"/>
+                <field name="ticket_nature_problem" widget="many2many_tags"/>
+                <field name="ticket_solve_remarks" widget="many2many_tags"/>
+            </xpath>
+
+            <xpath expr="//field[@name='user_id']" position="replace">
+                <field name="user_ids" widget="many2many_tags"/>
+            </xpath>
+
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                    <field name ="product_service"/>
+                    <field name="service_product_id" invisible="1"/>
+                    <field name="serial_no"/>
+                    <field name="qty"/>
+                    <field name="return_repair_id" readonly="1"/>
+                    
+            </xpath>
+
+            <!-- Code to change the string from "Type" to "Ticket Type" of the field named Type-->
+            <xpath expr="//field[@name='ticket_type_id']" position="attributes">
+                <attribute name="string">Ticket Type</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="before">
+                    <field name="create_date"/>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="customer_name"/>
+                    <field name="partner_email"/>
+                    <field name="partner_mobile"/>
+            </xpath>
+    
+            <xpath expr="//field[@name='email_cc']" position="before">
+                    <!-- <field name="partner_mobile"/> -->
+                    <field name="ticket_close_date"/>
+                    <field name="in_progress_date"/>
+                    <field name="process_solved_date"/>
+                    <field name="new_in_progress"/>
+                    <field name="in_progress_solved"/>
+                    <field name="date_age"/>
+                    <field name="total_days"/>
+                    <field name="total_hours"/>
+                    <field name="response_hour"/>
+            </xpath> 
+
+            <xpath expr="//field[@name='qty']" position="after">
+                    <field name="current_status"/>
+                    <field name="vendor_id" invisible = "current_status != 'vendor'"/>
+                    <field name="outward_challan_id" invisible = "current_status != 'vendor'" readonly="1"/>
+                    <field name="is_repeat_ticket"/>
+            </xpath>
+
+            <xpath expr="//field[@name='email_cc']" position="after">
+                <field name="sale_order_id" readonly="1"/>
+                <field name="note_inward"/>
+            </xpath>
+
+            <!-- Add two custom fields just above the end of the sheet -->
+            <!-- Code to show ratings by customers from custom email template starts -->
+            <xpath expr="//sheet/group" position="after">
+                <group>
+                    <field name="rating_last_value"/>
+                    <field name="feedback" readonly="1"/>
+                </group>
+            </xpath>
+            <!-- Code to show ratings by customers from custom email template ends -->
+
+            <xpath expr="//notebook" position="after">
+                <group>
+                     <field name="description" placeholder="Description of the ticket..."/>
+                </group>
+            </xpath>
+
+            <!-- Code to make the stage_id progress bar readonly, not allowing the stages to get changed using this bar -->
+            <xpath expr="//field[@name='stage_id']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+
+
+
+            <!-- Code to add custom button named "In-Out Challan" in the header section of ticket form view -->
+            <xpath expr="//header/field[@name='stage_id']" position="after">
+                <button name="open_change_stages_wizard"
+                        string="Change Stages"
+                        type="object"
+                        class="btn btn-primary"
+                        invisible="stage_id == 4"/>
+            </xpath> 
+
+            <!-- Code to add custom button named "Change Stages" in the header section of ticket form view -->
+            <xpath expr="//header/button[@name='open_change_stages_wizard']" position="after">
+                <button name="open_in_out_challan"
+                        string="In-Out Challan"
+                        type="object"
+                        class="btn btn-primary"
+                        invisible="stage_id != 2"/>
+            </xpath> 
+
+            <!-- Code to add smart button name "In-Out Challan" under ticket form view -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_returnable_goods"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-th-list"
+                        string="In-Out Challan"/>
+            </xpath>
+        </field>
+    </record> 
+    <!-- Code to replace and add desired pages in Helpdesk notebook form view -->
+    <record id="view_helpdesk_ticket_sheet_form_inherit" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.sheet.form.inherit</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='description']" position="replace">
+                <page name="assign_history" string="Assign History">
+                    <field name="assign_history_ids">
+                        <list editable="bottom">
+                            <field name="assigned_to" widget="many2many_tags"/>
+                            <field name="assign_date"/>
+                            <field name="assign_close_date"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+            <xpath expr="//notebook/page[@name='extra_info']" position="replace">
+                <page name="hold_history" string="Hold History">
+                    <field name="hold_history_ids">
+                        <list editable="bottom">
+                            <field name="hold_date"/>
+                            <field name="hold_close_date"/>
+                            <field name="total_time"/>
+                            <field name="total_days"/>
+                            <field name="hold_note"/>
+                            <field name="hold_closed_note"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+             <xpath expr="//notebook/page[@name='hold_history']" position="after">
+                <page name="mutliple_product" string="Multiple Product">
+                    <field name="product_line_ids">
+                        <list editable="bottom">
+                            <field name="service_product_id"/>
+                            <field name="serial_numer"/>
+                            <field name="quantity"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Record to add custom fields in ticket tree view of Helpdesk module -->
+    <record id="view_helpdesk_template_tree_inherit" model="ir.ui.view">
+        <field name="name">helpdesk.template.ticket.inherit</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_tickets_view_tree"/>
+        <field name="arch" type="xml">
+         
+            
+            <xpath expr="//field[@name='priority']" position="attributes">
+                <attribute name="optional">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='activity_ids']" position="attributes">
+                <attribute name="optional">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='sla_deadline']" position="attributes">
+                <attribute name="optional">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="ticket_nature_problem" widget="many2many_tags"/>
+            </xpath>
+
+            <xpath expr="//field[@name='user_id']" position="replace">
+                <field name="user_ids" widget="many2many_tags"/>
+            </xpath>
+
+            <xpath expr="//field[@name='user_ids']" position="attributes">
+                <attribute name="optional">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='stage_id']" position="after">
+                <field name="stage_note"/>
+            </xpath>
+
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="service_product_id"/>
+            </xpath>
+
+            <xpath expr="//field[@name='ticket_ref']" position="attributes">
+                <attribute name="string">Sequence</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="string">Ticket Name</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="display_customer_name" string="Customer Name"/>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='create_date']" position="attributes">
+                <attribute name="optional"></attribute>
+            </xpath>
+            
+        </field>
+    </record>
+</odoo>
+

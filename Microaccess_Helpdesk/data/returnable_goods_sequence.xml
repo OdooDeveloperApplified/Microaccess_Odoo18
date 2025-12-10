@@ -1,0 +1,22 @@
+<odoo>
+    <!-- Code to set desried sequence name for In-out challan name records -->
+    <record id="seq_returnable_goods" model="ir.sequence">
+        <field name="name">Returnable Goods Sequence</field>
+        <field name="code">returnable.goods</field>
+        <field name="prefix">R</field>
+        <field name="padding">5</field>
+        <!-- <field name="number_next">1</field> -->
+        <field name="number_increment">1</field>
+    </record>
+
+    <!-- Code to set desried sequence name for Ticket name records -->
+    <record id="seq_helpdesk_ticket_custom" model="ir.sequence">
+        <field name="name">Helpdesk Ticket Custom</field>
+        <field name="code">helpdesk.ticket.custom</field>
+        <field name="prefix">%(day)s/%(month)s/0</field> 
+        <field name="padding">1</field>
+        <!-- <field name="number_next">1</field> -->
+        <field name="number_increment">1</field>
+        <field name="use_date_range">True</field>
+    </record>
+</odoo>

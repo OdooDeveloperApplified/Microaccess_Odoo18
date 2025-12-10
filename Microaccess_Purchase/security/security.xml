@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_hide_delete_button" model="res.groups">
+        <field name="name">Hide Delete Action</field>
+    </record>
+</odoo>
