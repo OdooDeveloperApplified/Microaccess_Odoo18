@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Record to add custom fields in Contacts form view -->
+    <record id="view_contact_template_form_inherit" model="ir.ui.view">
+        <field name="name">contact.template.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="contact_person"/>
+                <field name="category_ids"/>
+            </xpath>
+
+            <!-- Code to make job_position field visible even when is_company = True: by default it is only visible when contact is type Individual -->
+            <xpath expr="//field[@name='function']" position="attributes">
+                <attribute name="invisible"/>
+            </xpath>
+
+            <xpath expr="//field[@name='website']" position="before">
+                <field name="customer_support_email"/>
+            </xpath>
+
+            <!-- Code to change the string from "Tax ID" to "GSTIN" of the field named vat -->
+            <xpath expr="//field[@name='vat']" position="attributes">
+                <attribute name="string">GSTIN</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Record to add below odoo built-in fields under sales and purchase page of contacts form view -->
+    <record id="view_partner_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="sales_team.res_partner_view_team"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='sales_purchases']//group[@name='sale']/field[@name='team_id']" position="before">
+                <field name="credit" string="Total Payable"/>
+                <field name="debit" string="Total Receivable"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

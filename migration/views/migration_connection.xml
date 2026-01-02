@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root Menu -->
+    <menuitem id="menu_data_migrate_root" name="Data Migrate" sequence="100"/>
+
+    <!-- Action -->
+    <record id="action_data_migration_connection" model="ir.actions.act_window">
+        <field name="name">Data Migration</field>
+        <field name="res_model">data.migration.connection</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- View -->
+    <record id="view_data_migration_connection" model="ir.ui.view">
+        <field name="name">data.migration.form</field>
+        <field name="model">data.migration.connection</field>
+        <field name="arch" type="xml">
+            <form string="Migrate Connection">
+            <group>
+                <group>
+                    <field name="source_url"/>
+                    <field name="source_db"/>
+                    <field name="source_user"/>
+                    <field name="source_password"/>
+                </group>
+                <group>
+                    <button string="Migrate Products" type="object" name="migrate_products" class="btn-primary"/>
+                    <button string="Migrate Contacts" type="object" name="migrate_contacts" class="btn-primary"/>
+                    <button string="Migrate Sales" type="object" name="migrate_sales" class="btn-primary"/>
+                    <button string="Migrate Purchase" type="object" name="migrate_purchases" class="btn-primary"/>
+                    <button string="Migrate Helpdesk" type="object" name="migrate_helpdesk" class="btn-primary"/>
+                    <button string="Validate Delivery" type="object" name="validate_sale_order_delivery" class="btn-primary"/>
+                    <button string="Migrate CRM" type="object" name="migrate_crm" class="btn-primary"/>
+                    <button string="Product Track" type="object" name="migrate_products_tracking" class="btn-primary"/>
+                </group>
+            </group>
+            <group>
+                <group>
+                    <field name="contact_limit"/>
+                    <field name="contact_offset"/>
+                    <field name="product_limit"/>
+                    <field name="product_offset"/>
+                    <field name="helpdesk_limit"/>
+                    <field name="helpdesk_offset"/>
+                    <field name="tracking_limit"/>
+                    <field name="tracking_offset"/>
+                </group>
+                <group>
+                    <field name="sale_limit"/>
+                    <field name="sale_offset"/>
+                    <field name="purachse_limit"/>
+                    <field name="purachse_offset"/>
+                    <field name="validate_sale_limit"/>
+                    <field name="validate_sale_offset"/>
+                    <field name="crm_limit"/>
+                    <field name="crm_offset"/>
+                </group>
+            </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- Child Menu -->
+    <menuitem id="menu_data_migration_connection"
+              name="Migrate Connection"
+              parent="menu_data_migrate_root"
+              action="action_data_migration_connection"
+              sequence="10"/>
+
+    <record id="view_product_template_form_inherit_update_goods_qty" model="ir.ui.view">
+        <field name="name">product.template.form.update.goods.qty</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <header position="inside">
+                <button name="action_update_all_goods_quantity"
+                        type="object"
+                        string="Update All Goods Qty"
+                        class="btn-primary"/>
+            </header>
+        </field>
+    </record>
+</odoo>

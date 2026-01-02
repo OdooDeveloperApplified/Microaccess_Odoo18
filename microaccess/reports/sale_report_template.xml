@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+   <template id="report_views_inherit" inherit_id="sale.report_saleorder_document">
+
+        <!-- Remove the default sale order number to prevent duplication -->
+        <xpath expr="//h2[hasclass('mt-4')]" position="replace">
+            <t t-if="doc.company_id.external_report_layout_id.xml_id != 'microaccess.external_layout_custom'">
+                <h2 class="mt-4">
+                    <span t-if="env.context.get('proforma', False) or is_pro_forma">Pro-Forma Invoice # </span>
+                    <span t-elif="doc.state in ['draft','sent']">Quotation # </span>
+                    <span t-else="">Order # </span>
+                    <span t-field="doc.name">SO0000</span>
+                </h2>
+            </t>
+        </xpath>
+        
+        <!-- Code to modify he address section -->
+        <!-- <xpath expr="//t[@t-set='address']//div[@t-field='doc.partner_id']" position="replace">
+            <div>
+                <t t-if="doc.partner_id.name">
+                    <strong><t t-esc="doc.partner_id.name"/></strong><br/><br/>
+                </t>
+                <t t-if="doc.partner_id.street">
+                    <t t-esc="doc.partner_id.street"/><br/>
+                </t>
+                <t t-if="doc.partner_id.street2">
+                    <t t-esc="doc.partner_id.street2"/><br/> 
+                </t>
+                <t t-if="doc.partner_id.city or doc.partner_id.state_id or doc.partner_id.zip or doc.partner_id.country_id">
+                    <t t-esc="doc.partner_id.city"/> <t t-if="doc.partner_id.zip"> - <t t-esc="doc.partner_id.zip"/></t>| 
+                    <t t-if="doc.partner_id.state_id"> <t t-esc="doc.partner_id.state_id.name"/></t> | <t t-if="doc.partner_id.country_id"><t t-esc="doc.partner_id.country_id.name"/></t>
+                </t>
+                
+            </div>
+        </xpath> -->
+
+        <!-- Insert Mobile Number before VAT -->
+        <xpath expr="//t[@t-set='address']/p[@t-if='doc.partner_id.vat']" position="before">
+            <p t-if="doc.partner_id.phone or doc.partner_id.mobile">
+                Phone: <span t-esc="doc.partner_id.phone"/> | Mobile: <span t-esc="doc.partner_id.mobile"/>
+            </p>
+        </xpath>
+
+        <!-- Replace the entire VAT line to use custom 'GSTIN' label -->
+        <xpath expr="//t[@t-set='address']/p[@t-if='doc.partner_id.vat']" position="replace">
+            <p t-if="doc.partner_id.vat">
+                GSTIN: <span t-field="doc.partner_id.vat"/>
+            </p>
+        </xpath>
+
+        <!-- Insert Address Template Before the Sale Order Number -->
+        <xpath expr="//div[@id='informations']" position="before">
+            <t t-if="doc.company_id.external_report_layout_id.xml_id == 'microaccess.external_layout_custom'">
+                
+                <div class="first-page-content" style="page-break-after: always; font-size: 18px; padding: 5px;">
+                    <div class="row">
+                        <div class="col-12 text-left">
+                            <span>To,</span><br/>
+                            <t t-call="microaccess.address_layout_custom"/>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div style="text-align: left; font-size: 18px;">
+                            Date: <span t-field="doc.date_order" t-options="{'widget': 'date'}"/>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div style="text-align:left; width: 100%; font-size: 20px; font-weight: bold;">
+                            <span t-if="env.context.get('proforma', False) or is_pro_forma">Pro-Forma Invoice # </span>
+                            <span t-elif="doc.state in ['draft','sent']">Quotation # </span>
+                            <span t-else="">Order # </span>
+                            <span t-field="doc.name">SO0000</span>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div style="text-align: left; font-weight: bold; font-size: 18px;">
+                            Subject: <span style="font-weight: bold;" t-field="doc.subject"/>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <p style="margin-bottom: 10px; font-weight: bold; font-size: 18px;">Respected Sir/Madam,</p>
+                            <p style="text-align: justify; margin-bottom: 10px;">
+                                Greetings of the day! <br/>
+                                Thank you for considering us for your prospective purchase of IT products.  
+                            </p>
+                            <p style="text-align: justify; margin-bottom: 10px;">
+                                Micro Access takes pride in giving priority to our customers and looking after their needs. 
+                                Quality and customer service are what distinguish us from others. We always strive to exceed 
+                                our customers' expectations and meet their requirements, for more than the last 30 years.  
+                            </p>
+                            <p style="text-align: justify; margin-bottom: 10px;">
+                                Please find attached our proposal in respect to your requirements, feel free to contact us 
+                                for any further clarification required by you.  
+                            </p>
+                            <p>
+                                For Micro Access Pvt. Ltd.<br/>
+                                Keyur Mankodi<br/>
+                                98795 73934<br/>
+                                <em>( Director - Sales <span>&#38;</span> Operations )</em>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <img t-att-src="'/microaccess/static/certification_logo.png'" alt="Certification Logo" style="margin-top: 30px;"/>
+                    </div>
+                </div>
+
+                <!-- Table starts on a new page -->
+                <div class="table" style="page-break-before: always;"></div>
+            </t>
+        </xpath>
+
+        <!-- Remove Quotation Date, Expiration Date, and Salesperson -->
+        <xpath expr="//div[@id='informations']" position="replace">
+            <div id="informations"></div>
+        </xpath>
+
+        <!-- Replace Existing Order Lines Table -->
+        <xpath expr="//table[hasclass('table')]" position="replace">
+            <div class="row mb-2" style="text-align: center; vertical-align: middle;">
+                <h4><strong>COMMERCIAL PROPOSAL</strong></h4>
+            </div>
+
+            <!-- Count only real product lines -->
+            <t t-set="real_lines" t-value="[line for line in doc.order_line if not line.display_type]"/>
+            <t t-set="last_index" t-value="len(real_lines)"/>
+            <t t-set="counter" t-value="0"/>
+
+            <table class="table" style="background-color: white; width: 100%; border: 1px solid black; font-size: 16px;">
+                <thead>
+                    <tr style="text-align: center">
+                        <th>Sr.</th>
+                        <th style="width: 40%">Particulars</th>
+                        <th style="width: 12%">Price per Unit</th>
+                        <th style="width: 8%">Qty</th>
+                        <th style="width: 8%">GST (%)</th>
+                        <th style="width: 14%">Total Price without GST</th>
+                        <th style="width: 10%">GST Amount</th>
+                        <th style="width: 16%">Total Price with GST</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <t t-foreach="doc.order_line" t-as="line">
+
+                        <!-- Add a Note (spans all 8 columns) to appear as a single row instead of product record -->
+                        <t t-if="line.display_type == 'line_note'">
+                            <tr>
+                                <td colspan="99" style="font-style: italic; text-align: left; background-color: #f7f7f7;">
+                                    <span t-field="line.name"/>
+                                </td>
+                            </tr>
+                        </t>
+
+                        <t t-elif="line.display_type == 'line_section'">
+                            <tr>
+                                <td colspan="99" style="font-style: italic; text-align: left; background-color: #f7f7f7;">
+                                    <span t-field="line.name"/>
+                                </td>
+                            </tr>
+                        </t>
+
+                        <!-- Normal Product Line -->
+                        <t t-elif="not line.display_type">
+                            <t t-set="counter" t-value="counter + 1"/>
+                            <tr>
+                                <td style="text-align: center;">
+                                    <t t-esc="counter"/>
+                                </td>
+
+                                <td style="text-align: center;">
+                                    <span style="text-decoration: underline;" t-field="line.product_id.display_name"/><br/>
+                                    <span t-if="line.name" t-field="line.name"/>
+                                </td>
+
+                                <td style="text-align: center;">
+                                    <span t-field="line.price_unit"/>
+                                </td>
+
+                                <td style="text-align: center;">
+                                    <span t-field="line.product_uom_qty"/>
+                                </td>
+
+                                <td style="text-align: center;">
+                                    <t t-if="line.tax_id">
+                                        <t t-foreach="line.tax_id" t-as="tax">
+                                            <span t-esc="int(tax.amount)"/>%<br/>
+                                        </t>
+                                    </t>
+                                    <t t-else="">0%</t>
+                                </td>
+
+                                <td style="text-align: center;">
+                                    <span t-esc="'%0.2f' % line.price_subtotal"/>
+                                </td>
+
+                                <td style="text-align: center;">
+                                    <t t-set="gst_total" t-value="0"/>
+                                    <t t-if="line.tax_id">
+                                        <t t-foreach="line.tax_id" t-as="tax">
+                                            <t t-set="gst_total" t-value="gst_total + (line.price_subtotal * tax.amount / 100)"/>
+                                        </t>
+                                    </t>
+                                    <span t-esc="gst_total"/>
+                                </td>
+
+                                <td style="text-align: center; background-color: white;">
+                                    <span t-esc="'%0.2f' % line.price_subtotal"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </t>
+
+                    <!-- Total block after last product line -->
+                    <tr>
+                        <td style="background-color: white;" colspan="5" rowspan="6"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: left; background-color: white;">
+                            <strong>Total Without GST</strong>
+                            <span style="float: right;" t-esc="'%0.2f' % (doc.amount_untaxed or 0.0)"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: left; background-color: white;">
+                            <strong>Total Taxes</strong>
+                            <span style="float: right;" t-esc="'%0.2f' % (doc.amount_tax or 0.0)"/>
+                        </td>
+                    </tr>
+                   
+                    <tr>
+                        <td colspan="3" style="text-align: left; background-color: white;">
+                            <strong>Total Amount</strong>
+                            <span style="float: right;" t-esc="'%0.2f' % (
+                                doc.currency_id.round(doc.amount_total) if doc.amount_total else 0.0)"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="3" style="text-align: left; background-color: white;">
+                            <strong>Round-off Amount</strong>
+                            <span style="float: right;" t-esc="'%0.2f' % (doc.amount_roundoff or 0.0)"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: left; background-color: white;">
+                            <strong>Total (Rounded)</strong>
+                            <span style="float: right;" t-esc="'%0.2f' % (doc.amount_total_rounded or 0.0)"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </xpath>
+
+        <!-- Code to make the in-built total block invisible and replace with the desired customized code -->
+        <xpath expr="//div[hasclass('clearfix')]" position="replace">
+            <div id="total"></div>
+        </xpath>
+    </template>
+</odoo>

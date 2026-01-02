@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Record to add custom fields in Repairs form view -->
+    <record id="view_repair_template_form_inherit" model="ir.ui.view">
+        <field name="name">repair.template.form.inherit</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='under_warranty']" position="before">
+                <field name="warranty_expiration_date"/>
+            </xpath>
+
+            <xpath expr="//field[@name='under_warranty']" position="after">
+                <field name="ticket_id"/>
+                <field name="subject"/>
+            </xpath>
+
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="invoice_method"/>
+                <field name="remarks_ids" widget="many2many_tags"/>
+                <field name="remarks_description"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Record to add custom fields in Repairs tree view of Helpdesk module -->
+    <record id="view_repair_tree_inherit" model="ir.ui.view">
+        <field name="name">repair.tree.inherit</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="partner_name"/>
+                <field name="remarks_ids" widget="many2many_tags"/>
+                <field name="remarks_description"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Action to Open Repair Orders under Helpdesk -->
+    <record id="action_repair_orders_helpdesk" model="ir.actions.act_window">
+        <field name="name">Repair Orders</field>
+        <field name="res_model">repair.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Repair Orders found. Create a new one.
+            </p>
+        </field>
+    </record>
+
+    <!-- Add Repair Orders to Helpdesk Menu -->
+    <menuitem id="menu_helpdesk_repair_orders"
+              name="Repair Orders"
+              parent="helpdesk.menu_helpdesk_root"
+              action="action_repair_orders_helpdesk"
+              sequence="15"/>
+</odoo>

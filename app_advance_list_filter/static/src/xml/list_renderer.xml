@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve" owl="1">
+    <t t-inherit="web.ListRenderer" t-inherit-mode="extension">
+        <xpath expr="//thead/tr[1]" position="after">
+            <tr class="o_column_search_row">
+
+                <th t-if="hasSelectors" class="o_list_record_selector"/>
+
+                <t t-foreach="columns" t-as="column" t-key="column.id">
+                    <th t-if="column.type === 'field' and column.hasLabel">
+
+                        <t t-if="['date','datetime'].includes(column.fieldType)">
+    <div class="d-flex gap-1 flex-column">
+        <input type="date"
+               class="form-control form-control-sm"
+               title="From"
+               style="background-color:#fff;"
+               t-on-change="(ev) => this.onColumnSearchInput(ev, column.name + '__from')"/>
+
+        <input type="date"
+               class="form-control form-control-sm"
+               title="To"
+               style="background-color:#fff;"
+               t-on-change="(ev) => this.onColumnSearchInput(ev, column.name + '__to')"/>
+    </div>
+</t>
+
+                     <!-- <t t-elif="column.fieldType === 'selection'">
+    <select class="form-control form-control-sm"
+            t-on-change="(ev) => this.onColumnSearchInput(ev, column.name)">
+        <option value="">All</option>
+        <option t-foreach="column.selection || []" t-as="opt" t-key="opt[0]" t-att-value="opt[0]">
+            <t t-esc="opt[1]"/>
+        </option>
+    </select>
+</t> -->
+
+
+                        <t t-else="">
+                            <!-- 🔤 TEXT / OTHER -->
+                            <input type="text"
+                                   class="form-control form-control-sm"
+                                   t-att-placeholder="'Search in ' + column.label"
+                                   style="background-color:#fff;"
+                                   t-on-input.stop="(ev) => this.onColumnSearchInput(ev, column.name)"/>
+                        </t>
+
+                    </th>
+                    <th t-else=""/>
+                </t>
+
+                <th t-if="hasOpenFormViewColumn" class="o_list_open_form_view"/>
+                <th t-if="hasActionsColumn or displayOptionalFields"
+                    class="o_list_actions_header"/>
+            </tr>
+        </xpath>
+    </t>
+</templates>

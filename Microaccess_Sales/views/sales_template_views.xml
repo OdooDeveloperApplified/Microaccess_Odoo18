@@ -32,6 +32,10 @@
                 <field name="amc_end_date" invisible = "amc_terms_name != 'AMC Sale'"/>
             </xpath>
 
+            <xpath expr="//field[@name='expected_delivery_date']" position="after">
+                <field name="installation_details"/>
+            </xpath>
+
             <xpath expr="//field[@name='tax_totals']" position="after">
                 <group class="oe_subtotal_footer">
                     <field name="is_enabled_roundoff"/>

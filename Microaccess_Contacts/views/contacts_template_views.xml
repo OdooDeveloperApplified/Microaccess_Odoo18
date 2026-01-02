@@ -51,4 +51,17 @@
             </xpath>
         </field>
     </record>
+
+    <!-- Record to add below odoo built-in fields under sales and purchase page of contacts form view -->
+    <record id="view_partner_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='sales_purchases']//group[@name='sale']/field[@name='user_id']" position="after">
+                <field name="credit" string="Total Payable"/>
+                <field name="debit" string="Total Receivable"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>

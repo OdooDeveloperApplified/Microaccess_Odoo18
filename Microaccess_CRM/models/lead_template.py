@@ -25,7 +25,6 @@ class LeadTemplate(models.Model):
     contact_name2 = fields.Char(string="Contact Name 2")
     mobile2 = fields.Char(string="Mobile 2")
     create_date = fields.Datetime(string="Date", readonly=False)
-   
     call_type = fields.Selection([
         ('daily_call', 'Daily Call'),
         ('existing_customer', 'Existing Customer'),

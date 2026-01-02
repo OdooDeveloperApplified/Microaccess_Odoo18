@@ -338,9 +338,16 @@ class HelpdeskTemplate(models.Model):
                     raise_if_not_found=False
                 )
 
-                if solved_stage and new_stage == solved_stage.id:
+                if solved_stage and new_stage == solved_stage.id and old_stage != new_stage:
+
+                    # STOP SYSTEM EMAIL: unfollow customer starts
+                    partner = ticket.partner_id
+                    if partner and partner in ticket.message_partner_ids:
+                        ticket.message_unsubscribe(partner_ids=[partner.id])
+                    # STOP SYSTEM EMAIL: unfollow customer ends
+
                     ticket._send_custom_rating_mail(ticket)
-        ######### ends####################
+        ######### ends ####################
 
         return result
 

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Record to add custom fields in ticket form view of Helpdesk module -->
+    <record id="view_helpdesk_ticket_form_inherit" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.inherit</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ticket_type_id']" position="after">
+                <field name="ticket_type_service"/>
+                <field name="ticket_remarks_receiving" widget="many2many_tags"/>
+                <field name="ticket_nature_problem" widget="many2many_tags"/>
+                <field name="ticket_solve_remarks" widget="many2many_tags"/>
+            </xpath>
+
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                    <field name="service_product_id"/>
+                    <field name="serial_no"/>
+                    <field name="qty"/>
+            </xpath>
+
+            <!-- Code to change the string from "Type" to "Ticket Type" of the field named Type-->
+            <xpath expr="//field[@name='ticket_type_id']" position="attributes">
+                <attribute name="string">Ticket Type</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="before">
+                    <field name="create_date"/>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="partner_email"/>
+                    <field name="partner_mobile"/>
+            </xpath>
+    
+            <xpath expr="//field[@name='email_cc']" position="before">
+                    <!-- <field name="partner_mobile"/> -->
+                    <field name="ticket_close_date"/>
+                    <field name="in_progress_date"/>
+                    <field name="process_solved_date"/>
+                    <field name="new_in_progress"/>
+                    <field name="in_progress_solved"/>
+                    <field name="date_age"/>
+                    <field name="total_days"/>
+                    <field name="total_hours"/>
+            </xpath> 
+
+            <xpath expr="//field[@name='email_cc']" position="after">
+                <field name="sale_order_id"/>
+                <field name="current_status"/>
+                <field name="vendor_id" invisible = "current_status != 'vendor'"/>
+                <field name="note_inward"/>
+                <field name="response_hour"/>
+                <field name="is_repeat_ticket"/>
+            </xpath>
+
+             <!-- Add two custom fields just above the end of the sheet -->
+            <xpath expr="//sheet/group" position="after">
+                <group>
+                    <field name="ticket_rating"/>
+                    <field name="ticket_review"/>
+                </group>
+            </xpath>
+
+            <!-- Code to make the stage_id progress bar readonly, not allowing the stages to get changed using this bar -->
+            <xpath expr="//field[@name='stage_id']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+
+            <!-- Code to add custom button named "Change Stages" in the header section of ticket form view -->
+            <xpath expr="//header/field[@name='stage_id']" position="after">
+                <button name="open_change_stages_wizard"
+                        string="Change Stages"
+                        type="object"
+                        class="btn btn-primary"
+                        invisible="stage_id == 4"/>
+            </xpath> 
+        </field>
+    </record> 
+
+    <record id="view_helpdesk_ticket_sheet_form_inherit" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.sheet.form.inherit</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_timesheet.helpdesk_ticket_view_form_inherit_helpdesk_timesheet"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='description']" position="replace">
+                <page name="assign_history" string="Assign History">
+                    <field name="assign_history_ids">
+                        <tree editable="bottom">
+                            <field name="assigned_to"/>
+                            <field name="assign_date"/>
+                            <field name="assign_close_date"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+            <xpath expr="//notebook/page[@name='extra_info']" position="replace">
+                <page name="hold_history" string="Hold History">
+                    <field name="hold_history_ids">
+                        <tree editable="bottom">
+                            <field name="hold_date"/>
+                            <field name="hold_close_date"/>
+                            <field name="total_time"/>
+                            <field name="total_days"/>
+                            <field name="hold_note"/>
+                            <field name="hold_closed_note"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+             <xpath expr="//notebook/page[@name='hold_history']" position="after">
+                <page name="mutliple_product" string="Multiple Product">
+                    <!-- <field name="hold_history_ids">
+                        <tree editable="bottom">
+                            <field name="hold_date"/>
+                            <field name="hold_close_date"/>
+                            <field name="total_time"/>
+                            <field name="total_days"/>
+                            <field name="hold_note"/>
+                            <field name="hold_closed_note"/>
+                        </tree>
+                    </field> -->
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+   
+</odoo>

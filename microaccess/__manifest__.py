@@ -1,0 +1,40 @@
+{
+    'name': 'Microaccess',
+    'version': '18.0.1.0',
+    'category': 'HR',
+    'author': 'Applified',
+    'website': 'https://www.microaccess.com',
+    'depends': ['base', 'mail','sale','repair'],
+    'data': [
+        'security/ir.model.access.csv',
+        
+        'views/product_brand.xml',
+        'views/product_template_views.xml',
+        'views/sales_master_remarks_views.xml',
+        'views/crm_leads_views.xml',
+        'views/crm_master_views.xml',
+        'views/sales_template_views.xml',
+        'views/contacts_template_views.xml',
+        'views/purchase_template_views.xml',
+        'views/inventory_template_views.xml',
+        'wizard/change_stages_wizard.xml',
+        'views/helpdesk_template_views.xml',
+        'views/service_product_views.xml',
+        'views/repair_template_views.xml',
+        'views/repair_tag_views.xml',
+        'views/helpdesk_master_remarks_views.xml',
+        'views/contacts_category_master_views.xml',
+        
+        'wizard/combined_weekly_report_wizard.xml',
+
+        'reports/document_layout_template.xml', 
+        'reports/sale_report_template.xml', 
+        'reports/company_footer_template.xml',
+        'reports/footer_template.xml',
+
+        'data/data.xml', 
+    ],
+    'assets': {},
+    'installable': True,
+    'auto_install': False,
+}

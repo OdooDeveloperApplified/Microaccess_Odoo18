@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Code to create wizard form view -->
+    <record id="view_combined_weekly_report_wizard" model="ir.ui.view">
+        <field name="name">combined.weekly.report.wizard.form</field>
+        <field name="model">combinedweekly.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Combined Weekly Activity Tracker Report">
+                <group>
+                    <field name="salesperson_id"/>
+                </group>
+                <footer>
+                    <button name="action_print_combined_report" string="Download Report" type="object" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Code to define action of the created wizard -->
+    <record id="combined_weekly_report_wizard_action" model="ir.actions.act_window">
+        <field name="name">Combined Weekly Activity Tracker Report</field>
+        <field name="res_model">combinedweekly.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_combined_weekly_report_wizard"/>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Code to add the wizard opening under CRM->Reporting->BD Weekly Activity Tracker Report menu -->
+    <menuitem id="menu_crm_print_combined_weekly_report"
+              name="BD/Sales Weekly Activity Tracker Report"
+              parent="crm.crm_menu_report"
+              action="combined_weekly_report_wizard_action"
+              />
+</odoo>

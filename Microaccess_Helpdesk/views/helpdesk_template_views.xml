@@ -224,6 +224,10 @@
             <xpath expr="//field[@name='create_date']" position="attributes">
                 <attribute name="optional"></attribute>
             </xpath>
+
+            <xpath expr="//field[@name='create_date']" position="after">
+                <field name="ticket_close_date"/>
+            </xpath>
             
         </field>
     </record>

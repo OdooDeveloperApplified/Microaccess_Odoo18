@@ -5,7 +5,7 @@
         <record id="custom_rating_ticket_request_email_template" model="mail.template">
             <field name="name">Helpdesk: Custom Ticket Rating Request</field>
             <field name="model_id" ref="Microaccess_Helpdesk.model_helpdesk_ticket"/>
-            <field name="subject">{{ object.company_id.name or object.user_id.company_id.name or 'Helpdesk' }}: Service Rating Request</field>
+            <field name="subject">Your Support Ticket Has Been Closed #{{ object.name}}</field>
             <field name="email_from">{{ (object.team_id.alias_email_from or object.company_id.email_formatted or object._rating_get_operator().email_formatted or user.email_formatted) }}</field>
             <field name="email_to">{{ (object.partner_email if not object.sudo().partner_id.email or object.sudo().partner_id.email != object.partner_email else '') }}</field>
             <field name="partner_to">{{ object.partner_id.id if object.sudo().partner_id.email and object.sudo().partner_id.email == object.partner_email else '' }}</field>
@@ -18,31 +18,72 @@
                 <tbody>
                     <tr><td valign="top" style="font-size: 14px;">
                         <t t-if="partner.name">
-                            Hello,<br/>
-                            <t t-out="partner.name or ''">Brandon Freeman</t>,<br/><br/>
+                            Dear <t t-out="partner.name or ''">Brandon Freeman</t>,<br/><br/>
                         </t>
                         <t t-else="">
-                            Hello,<br/>
+                            Dear Customer,<br/><br/>
                         </t>
-                        Please take a moment to rate our services related to the ticket "<strong t-out="object.name or ''">Table legs are unbalanced</strong>"
-                        <t t-if="object._rating_get_operator().name">
-                            assigned to <strong t-out="object._rating_get_operator().name or ''">Mitchell Admin</strong>.<br/><br/>
-                        </t>
-                        <t t-else="">
-                            .<br/><br/>
-                        </t>
+
+                        <p>We hope this message finds you well.</p>
+                        <p>
+                            This is to inform you that your support ticket
+                            <strong>#<t t-out="object.name"/></strong>
+                            has been successfully resolved and is now closed.
+                        </p>
+                        <p>
+                            Ticket Created Date:
+                                <t t-if="object.create_date">
+                                    <t t-out="object.create_date.strftime('%d/%m/%Y')"/>
+                                </t>
+                                <t t-else=""></t>
+                                <br/>
+                            Ticket Closed Date:
+                                <t t-if="object.close_date">
+                                    <t t-out="object.close_date.strftime('%d/%m/%Y')"/>
+                                </t>
+                                <t t-else=""></t>
+                                <br/>
+                            Assigned To (Engineer Name):
+                                <t t-out="', '.join(object.user_ids.mapped('name')) or ''"/>
+                                <br/>
+                            Nature of Problem:
+                                <t t-out="', '.join(object.ticket_nature_problem.mapped('nature_problem')) or ''"/>
+                                <br/>
+                            Service Product:
+                                <t t-out="object.product_service or ''"/>
+                                <br/>
+                        </p>
+                        <p>
+                            Thank you for giving us the opportunity to assist you 🙏. We appreciate your trust in our services.
+                        </p>
+                        <p>
+                            Please take a moment to rate our services related to this ticket.
+                        </p> 
+                       
                     </td></tr>
                     <tr><td style="text-align: center;">
                         <table border="0" cellpadding="0" cellspacing="0" summary="o_mail_notification" style="width:100%; margin: 32px 0px 32px 0px;">
-                            <tr><td style="font-size: 16px;">
-                                <strong>Tell us how you feel about our services</strong><br/>
-                                <p style="color: #888888;">Please rate your experience with our service</p><br/>
+                            <tr><td style="font-size: 16px; margin-bottom: 8px;">
                                 <strong>We value your feedback! Please rate and share your thoughts</strong><br/>
                                 <!-- <span style="text-color: #888888">(Click Here!)</span> -->
                             </td></tr>
                             <tr>
-                                <td>
-                                    <a t-attf-href="/rate/{{ access_token }}/select">Click here to provide your feedback!</a>
+                                <td> 
+                                    <!-- <a t-attf-href="/rate/{{ access_token }}/select">Click here to provide your feedback!</a> -->
+                                    <a t-attf-href="/rate/{{ access_token }}/select"
+                                        style="
+                                                display: inline-block;
+                                                padding: 12px 24px;
+                                                background-color: #714B67;
+                                                color: #ffffff !important;
+                                                text-decoration: none;
+                                                font-size: 14px;
+                                                font-weight: 600;
+                                                border-radius: 6px;
+                                                line-height: 1.4;
+                                        ">
+                                            Click here to provide your feedback!
+                                        </a>
                                 </td>
                             </tr>
                             

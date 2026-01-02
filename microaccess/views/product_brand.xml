@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Product Brand Form View -->
+    <record id="view_product_brand_form" model="ir.ui.view">
+        <field name="name">product.brand.form</field>
+        <field name="model">product.brand</field>
+        <field name="arch" type="xml">
+            <form string="Product Brand">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <!-- Smart button to display number of products that belong to a particular brand -->
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="action_view_products" icon="fa-th-list" type="object" >
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value"><field name="product_count"/></span>
+                                <span class="o_stat_text">Products</span>
+                            </div>
+                        </button>
+                    </div>
+                    <field name="image_1920" widget='image' class="oe_avatar" />
+                    <group>
+                        <group>
+                            <field name="brand_name"/>
+                            <field name="brand_description"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+
+                <!-- Chatter -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Product Brand Tree View -->
+    <record id="view_product_brand_tree" model="ir.ui.view">
+        <field name="name">product.brand.tree</field>
+        <field name="model">product.brand</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="brand_name"/>
+                <field name="brand_description" optional="1"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Product Brand Search View to add Archive filter -->
+    <record id="view_product_brand_search" model="ir.ui.view">
+        <field name="name">product.brand.search</field>
+        <field name="model">product.brand</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="brand_name"/>
+                <field name="active"/>
+                <filter name="archived_records" string="Archive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Product Brand Action -->
+    <record id="action_product_brand" model="ir.actions.act_window">
+        <field name="name">Product Brands</field>
+        <field name="res_model">product.brand</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage product brands.
+            </p>
+        </field>
+    </record>
+
+    <!-- Product Brand Menu under Sales > Configuration > Products -->
+    <menuitem id="menu_product_brand"
+              name="Brands"
+              parent="sale.prod_config_main"
+              action="action_product_brand"
+              />
+</odoo>

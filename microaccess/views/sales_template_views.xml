@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Record to add custom fields in Quotation form view -->
+    <record id="view_quotation_template_form_inherit" model="ir.ui.view">
+        <field name="name">quotation.template.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="customer_status"/>
+                <field name="partner_invoice_id"/>
+                <field name="partner_shipping_id"/>
+                <field name="partner_shipping_contact"/>
+                <field name="partner_shipping_mobile"/>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_shipping_mobile']" position="after">
+                <field name="subject"/>
+                <field name="cancel_remarks" invisible = "state != 'cancel'"/>
+                <field name="remarks_cancel_ids" invisible = "state != 'cancel'"/>
+            </xpath>
+
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="customer_po_no"/>
+                <field name="customer_po_date"/>
+                <field name="terms_id"/>
+                <field name="expected_delivery_date"/>  
+                <field name="is_enabled_roundoff"/>
+            </xpath>
+
+            <xpath expr="//group[@name='sale_total']/field[@name='tax_totals']" position="after">
+                <field name="amount_roundoff"/>
+                <field name="amount_total_rounded"/>
+            </xpath>
+           
+        </field>
+    </record>  
+
+    <!-- Record to add custom fields in Quotation Tree view -->
+    <record id="view_quotation_template_tree_inherit" model="ir.ui.view">
+        <field name="name">quotation.template.tree.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="subject"/>
+            </xpath>
+
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="cancel_remarks"/>
+                <field name="remarks_cancel_ids"/>
+            </xpath>
+
+            <!-- Remove the original Total column -->
+            <xpath expr="//field[@name='amount_total']" position="replace"/>
+            
+            <!-- Move total column at the end and Reinsert Total at the end with summary -->
+            <xpath expr="//field[@name='remarks_cancel_ids']" position="after">
+                <field name="amount_total" sum="Total"/>
+            </xpath>
+        </field>
+    </record> 
+
+    
+</odoo>

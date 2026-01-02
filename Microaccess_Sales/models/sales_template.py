@@ -14,6 +14,7 @@ class SalesTemplate(models.Model):
         ('newcustomer', 'New Customer'),
         ('dealer', 'Dealer'),
     ], string='Customer Status')
+    installation_details = fields.Text(string="Installation Details")
     subject = fields.Char(string="Subject")
     customer_po_no = fields.Char(string="Customer PO No.")
     customer_po_date = fields.Date(string="Customer PO Date")
@@ -28,12 +29,12 @@ class SalesTemplate(models.Model):
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"
     )
     # Old delivery address code
-    partner_shipping_id = fields.Many2one(
-        'res.partner',
-        string="Delivery Address",
-        compute="_compute_addresses_from_customer",
-        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"
-    )
+    # partner_shipping_id = fields.Many2one(
+    #     'res.partner',
+    #     string="Delivery Address",
+    #     compute="_compute_addresses_from_customer",
+    #     domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"
+    # )
     partner_shipping = fields.Char(string="Delivery Address")
 
     partner_shipping_contact = fields.Char(string = "Delivery Contact")
@@ -119,7 +120,7 @@ class SalesTemplate(models.Model):
             if rec.partner_id:
                 addresses = rec.partner_id.address_get(['invoice', 'delivery'])
                 rec.partner_invoice_id = addresses.get('invoice') or False
-                rec.partner_shipping_id = addresses.get('delivery') or False
+                # rec.partner_shipping_id = addresses.get('delivery') or False
 
     @api.onchange('terms_id')
     def _onchange_terms_id(self):
@@ -170,12 +171,12 @@ class SalesTemplate(models.Model):
                     'product_uom': product.uom_id.id,
                     'tax_id': [(6, 0, product.taxes_id.ids)],
                 })
-                _logger.info("✅ Auto-added product '%s' (ID: %s) to Sale Order %s", product.name, product.id, order.name)
+                _logger.info("Auto-added product '%s' (ID: %s) to Sale Order %s", product.name, product.id, order.name)
 
             if not auto_products:
-                _logger.info("ℹ️ No products marked for auto-add to Sale Orders.")
+                _logger.info("No products marked for auto-add to Sale Orders.")
         except Exception as e:
-            _logger.exception("❌ Failed to auto-add products: %s", e)
+            _logger.exception("Failed to auto-add products: %s", e)
         return order
     ############### remove the below code after the import is done and uncomment the above code:starts
     # @api.model
