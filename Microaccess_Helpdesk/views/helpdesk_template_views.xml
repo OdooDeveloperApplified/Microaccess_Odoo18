@@ -214,6 +214,15 @@
             </xpath>
 
             <xpath expr="//field[@name='name']" position="after">
+                <field name="ticket_type_id"/>
+                <field name="ticket_type_service"/>
+            </xpath>
+
+            <xpath expr="//field[@name='stage_note']" position="after">
+                <field name="description"/>
+            </xpath>
+
+            <xpath expr="//field[@name='name']" position="after">
                 <field name="display_customer_name" string="Customer Name"/>
             </xpath>
 

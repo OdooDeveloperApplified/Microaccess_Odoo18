@@ -43,7 +43,8 @@
                     <span t-esc="o.company_id.street"/><br/>
                     <span t-esc="o.company_id.city"/>
                     <t t-if="o.company_id.state_id">, <span t-esc="o.company_id.state_id.name"/></t>
-                    <t t-if="o.company_id.zip"> - <span t-esc="o.company_id.zip"/></t>
+                    <t t-if="o.company_id.zip"> - <span t-esc="o.company_id.zip"/></t><br/>
+                    <t t-if="o.company_id.vat"> GSTIN: <span t-esc="o.company_id.vat"/></t>
                 </div>
             </div>
             <div class="row">       

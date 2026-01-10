@@ -1,0 +1,74 @@
+<odoo>
+    <template id="contact_envelope_report">
+        <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+                <t t-call="web.basic_layout">
+                    <div class="page">
+                        <div style="font-size: 14pt; line-height: 1.4;margin-top:300px; margin-left:350px; position: absolute;">
+                                <div><strong>To' </strong></div><br/>
+                                <strong t-esc="o.name"/><br/>
+
+                            <t t-if="o.street">
+                                <strong><t t-esc="o.street"></t></strong><br/>
+                            </t>
+
+                            <t t-if="o.street2">
+                                <strong><t t-esc="o.street2"></t></strong><br/>
+                            </t>
+
+                            <t t-if="o.city or o.zip or o.state_id">
+                                <t t-if="o.city">
+                                    <strong><t t-esc="o.city"></t></strong>
+                                </t>
+                                <t t-if="o.zip">
+                                    <strong>- <t t-esc="o.zip"></t></strong>
+                                </t>
+                                <t t-if="o.state_id">
+                                    <strong>- <t t-esc="o.state_id.name"></t></strong>
+                                </t>
+                                <br/>
+                            </t>
+
+                            <t t-if="o.phone">
+                               <strong> Ph: <t t-esc="o.phone"></t></strong><br/>
+                            </t>
+
+                            <t t-if="o.mobile">
+                                <strong>Mobile: <t t-esc="o.mobile"></t></strong>
+                            </t>
+                        </div>
+                    
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="paperformat_contact_envelope" model="report.paperformat">
+        <field name="name">Contact Envelope</field>
+        <field name="default" eval="False" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">15</field>
+        <field name="margin_bottom">15</field>
+        <field name="margin_left">15</field>
+        <field name="margin_right">15</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- Report Action -->
+    <record id="report_contact_envelope" model="ir.actions.report">
+        <field name="name">Envelope</field>
+        <field name="model">res.partner</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">Microaccess_Contacts.contact_envelope_report</field>
+        <field name="report_file">Microaccess_Contacts.contact_envelope_report</field>
+        <field name="paperformat_id" ref="paperformat_contact_envelope"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

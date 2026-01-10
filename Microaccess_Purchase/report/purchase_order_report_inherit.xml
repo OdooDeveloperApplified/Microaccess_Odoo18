@@ -2,8 +2,11 @@
 <odoo>
    <template id="purchase_order_report_inherit" inherit_id="purchase.report_purchaseorder_document">
         
-        <xpath expr="//div[@t-if='o.user_id']/strong[text()='Buyer']" position="replace">
-            <strong>Purchase Representative:</strong>
+        <xpath expr="//div[@id='informations']/div[div[@t-field='o.user_id']]" position="replace">
+            <div t-if="o.user_id" class="col">
+                <strong>Purchase Representative:</strong>
+                <div t-field="o.user_id"/>
+            </div>
         </xpath>
         <xpath expr="//t[@t-set='address']/div[@t-field='o.partner_id']" position="before">
             <strong class="d-block mb-1">Vendor/Supplier Address:</strong>

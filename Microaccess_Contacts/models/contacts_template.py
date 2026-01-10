@@ -13,6 +13,7 @@ class ContactsTemplate(models.Model):
 
     # Code for Daily call contact functionality
     is_lead_contact = fields.Boolean("Is Daily Call Contact", default=False)
+    
     @api.model
     def create(self, vals):
         if self.env.context.get('from_lead'):
@@ -21,6 +22,31 @@ class ContactsTemplate(models.Model):
             raise UserError(_("Invalid operation: You are not allowed to create new Contacts."))
         else:
             return super(ContactsTemplate, self).create(vals)
+        
+    def write(self, vals):
+        # Restrict editing contacts for specific users
+        if self.env.user.has_group('Microaccess_Contacts.no_contact_group'):
+        # Fields that are NOT allowed to be edited
+            restricted_fields = {
+                'name',
+                'phone',
+                'mobile',
+                'email',
+                'street',
+                'street2',
+                'city',
+                'zip',
+                'state_id',
+                'country_id',
+                'vat',
+            }
+
+            # If user tries to edit any restricted field → block
+            if restricted_fields.intersection(vals.keys()):
+                raise UserError(_("Invalid operation: You are not allowed to edit Contact details."))
+
+
+        return super(ContactsTemplate, self).write(vals)
     
 class CategoryMaster(models.Model):
     _name = "category.master"
@@ -39,6 +65,13 @@ class product_template(models.Model):
             raise UserError(_("Invalid operation: You are not allowed to create new Products."))
         else:
             return super(product_template, self).create(vals)
+    
+    def write(self, vals):
+        # Block product editing
+        if self.env.user.has_group('Microaccess_Contacts.no_product_group'):
+            raise UserError(_("Invalid operation: You are not allowed to edit Product details."))
+
+        return super(product_template, self).write(vals)
 
 
     

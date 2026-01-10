@@ -61,10 +61,10 @@ class SalesTemplate(models.Model):
 
 
     # Remove this code after data import over: start#
-    date_order = fields.Datetime(
-        string="Order Date",
-        required=True, copy=False,
-        help="Creation date of draft/sent orders,\nConfirmation date of confirmed orders.")
+    # date_order = fields.Datetime(
+    #     string="Order Date",
+    #     required=True, copy=False,
+    #     help="Creation date of draft/sent orders,\nConfirmation date of confirmed orders.")
     # Remove this code after data import over: start#
 
     @api.depends('revision_ids.revision_date')
@@ -217,11 +217,11 @@ class SalesTemplate(models.Model):
     def action_confirm(self):
          # Check mandatory custom fields before confirming
         required_fields = [
+            'partner_shipping',
             'partner_shipping_contact',
             'partner_shipping_mobile',
-            'customer_po_no',
-            'customer_po_date',
             'expected_delivery_date',
+            'installation_details',
         ]
 
         for order in self:
@@ -242,26 +242,26 @@ class SalesTemplate(models.Model):
                 order.opportunity_id.action_set_won()  # Mark opportunity as Won
         return res
     ############## remove the below code after the import is done and uncomment the above code:starts
-    def action_confirm(self):
-        # Preserve imported/assigned date_order
-        for order in self:
-            if order.date_order:
-                preserved_date = order.date_order
-            else:
-                preserved_date = False
+    # def action_confirm(self):
+    #     # Preserve imported/assigned date_order
+    #     for order in self:
+    #         if order.date_order:
+    #             preserved_date = order.date_order
+    #         else:
+    #             preserved_date = False
 
-            # Call super
-            res = super(SalesTemplate, order).action_confirm()
+    #         # Call super
+    #         res = super(SalesTemplate, order).action_confirm()
 
-            # Restore date if it was set manually/imported
-            if preserved_date:
-                order.date_order = preserved_date
+    #         # Restore date if it was set manually/imported
+    #         if preserved_date:
+    #             order.date_order = preserved_date
 
-            # Mark linked opportunity as won
-            if order.opportunity_id:
-                order.opportunity_id.action_set_won()
+    #         # Mark linked opportunity as won
+    #         if order.opportunity_id:
+    #             order.opportunity_id.action_set_won()
 
-        return res
+    #     return res
     ############### remove the below code after the import is done and uncomment the above code:starts
 
     # def action_cancel(self):

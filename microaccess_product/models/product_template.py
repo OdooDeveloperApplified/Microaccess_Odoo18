@@ -146,6 +146,18 @@ class BlockQuantityWizard(models.TransientModel):
         default=lambda self: self.env.ref('microaccess_product.stock_location_quantity_blocked'),
         required=True
     )
+    lot_id = fields.Many2one(
+        'stock.lot',
+        string="Lot / Serial Number",
+        domain="[('product_id', '=', product_id)]",
+    )
+
+    @api.constrains('product_id', 'lot_id')
+    def _check_lot_required(self):
+        for rec in self:
+            if rec.product_id.tracking != 'none' and not rec.lot_id:
+                raise UserError(_("Lot/Serial Number is required for tracked products."))
+
 
     # Code to confirm blocking quantity and related stock moves
     def action_confirm_block(self):
@@ -188,10 +200,22 @@ class BlockQuantityWizard(models.TransientModel):
 
         # Confirm and assign picking
         picking.action_confirm()
-        # 
+        
         for move in picking.move_ids:
-            move.quantity = move.product_uom_qty
-    
+            if product.tracking == 'none':
+                move.quantity = qty
+            else:
+                self.env['stock.move.line'].create({
+                    'move_id': move.id,
+                    'product_id': product.id,
+                    'product_uom_id': product.uom_id.id,
+                    'qty_done': qty,
+                    'location_id': self.source_location_id.id,
+                    'location_dest_id': self.blocked_location_id.id,
+                    'lot_id': self.lot_id.id,
+                })
+
+            
         # Validate picking (done)
         picking.button_validate()
 
@@ -218,6 +242,18 @@ class UnblockQuantityWizard(models.TransientModel):
         default=lambda self: self.env.ref('stock.stock_location_stock'),
         required=True
     )
+    lot_id = fields.Many2one(
+        'stock.lot',
+        string="Lot / Serial Number",
+        domain="[('product_id', '=', product_id)]",
+    )
+
+    @api.constrains('product_id', 'lot_id')
+    def _check_lot_required(self):
+        for rec in self:
+            if rec.product_id.tracking != 'none' and not rec.lot_id:
+                raise UserError(_("Lot/Serial Number is required for tracked products."))
+
 
     # Code to confirm unblocking quantity and related stock moves
     def action_confirm_unblock(self):
@@ -260,9 +296,22 @@ class UnblockQuantityWizard(models.TransientModel):
 
         # Confirm, assign and validate picking
         picking.action_confirm()
-        # 
+    
+        # for move in picking.move_ids:
+        #     move.quantity = move.product_uom_qty
         for move in picking.move_ids:
-            move.quantity = move.product_uom_qty
+            if product.tracking == 'none':
+                move.quantity = qty
+            else:
+                self.env['stock.move.line'].create({
+                    'move_id': move.id,
+                    'product_id': product.id,
+                    'product_uom_id': product.uom_id.id,
+                    'qty_done': qty,
+                    'location_id': self.source_location_id.id,
+                    'location_dest_id': self.stock_location_id.id,
+                    'lot_id': self.lot_id.id,
+                })
         picking.button_validate()
 
         # Recompute quantities dynamically
@@ -277,3 +326,18 @@ class UnblockQuantityWizard(models.TransientModel):
                 'last_unblocked_product_id': product.id
             }
         }
+
+class StockMove(models.Model):
+    _inherit = 'stock.move'
+
+    lot_id = fields.Many2one(
+        'stock.lot',
+        string='Lot / Serial',
+        compute='_compute_lot_id',
+        store=False,
+    )
+
+    def _compute_lot_id(self):
+        for move in self:
+            # Show the first lot (standard Odoo behavior)
+            move.lot_id = move.move_line_ids[:1].lot_id

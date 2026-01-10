@@ -685,7 +685,27 @@ class ReturnableGoods(models.Model):
         for record in self:
             if record.over_estimate and 'over_estimate' in vals:
                 raise UserError("You cannot modify Over Estimate once it is set.")
-        return super().write(vals)
+        res = super().write(vals)
+
+        if 'partner_id' in vals:
+            for rec in self:
+                if rec.ticket_id and rec.partner_id:
+                    rec.ticket_id.vendor_id = rec.partner_id
+                # Log vendor info in ticket chatter
+                rec.ticket_id.message_post(
+                    body=f"Vendor → {rec.partner_id.name}",
+                    message_type="comment",
+                    subtype_xmlid="mail.mt_note",
+                )
+
+        if 'state' in vals and vals.get('state') in ('return', 'repair'):
+            for rec in self:
+                if rec.ticket_id:
+                    rec.ticket_id.write({
+                        'current_status': 'in-house'
+                    })
+
+        return res
 
     # Code to link returnable goods lines and return received quantities to the returnable goods
     returnable_goods_line_ids = fields.One2many('returnable.goods.line', 'returnable_goods_id', string="Returnable Goods Lines")
@@ -712,20 +732,20 @@ class ReturnableGoods(models.Model):
 
         return record
 
-    def write(self, vals):
-        res = super().write(vals)
-        # --- Update ticket vendor if partner_id is changed ---
-        if 'partner_id' in vals:
-            for rec in self:
-                if rec.ticket_id and rec.partner_id:
-                    rec.ticket_id.vendor_id = rec.partner_id
-                # Log vendor info in ticket chatter
-                rec.ticket_id.message_post(
-                    body=f"Vendor → {rec.partner_id.name}",
-                    message_type="comment",
-                    subtype_xmlid="mail.mt_note",
-                )
-        return res
+    # def write(self, vals):
+    #     res = super().write(vals)
+    #     # --- Update ticket vendor if partner_id is changed ---
+    #     if 'partner_id' in vals:
+    #         for rec in self:
+    #             if rec.ticket_id and rec.partner_id:
+    #                 rec.ticket_id.vendor_id = rec.partner_id
+    #             # Log vendor info in ticket chatter
+    #             rec.ticket_id.message_post(
+    #                 body=f"Vendor → {rec.partner_id.name}",
+    #                 message_type="comment",
+    #                 subtype_xmlid="mail.mt_note",
+    #             )
+    #     return res
 
     # Code to define action on buttons provided in header section of the form view
     def action_start_progress(self):

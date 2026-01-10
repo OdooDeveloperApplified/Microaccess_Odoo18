@@ -10,6 +10,7 @@
         'security/ir.model.access.csv',
         'views/contacts_template_views.xml',
         'views/contacts_category_master_views.xml',
+        'report/contact_envelope.xml',
     ],
     
     'assets': {},

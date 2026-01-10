@@ -12,6 +12,7 @@
                         <field name="source_location_id"/>
                         <field name="stock_location_id" readonly="1"/>
                         <field name="quantity"/>
+                        <field name="lot_id" invisible="product_id.tracking == 'none'"/>
                     </group>
                     <footer>
                         <button string="Confirm" type="object" name="action_confirm_unblock" class="btn-primary"/>
@@ -33,6 +34,7 @@
                 <field name="product_uom"/>
                 <field name="location_id" string="Source Location"/>
                 <field name="location_dest_id" string="Destination Location"/>
+                <field name="lot_id"/>
                 <field name="date"/>
             </list>
         </field>
